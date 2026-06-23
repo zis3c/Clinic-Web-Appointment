@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+    /* Hide sidebar, nav, and all interactive elements */
+    nav, aside, header,
+    [class*="sidebar"], [class*="Sidebar"],
+    [class*="lg:w-72"], [class*="lg:w-20"] {
+        display: none !important;
+    }
+
+    /* Make main content fill the full page */
+    body, html {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+    }
+
+    /* Remove the flex layout that constrains the main area */
+    .flex.h-screen {
+        display: block !important;
+    }
+
+    /* Ensure tables don't break across pages */
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; page-break-after: auto; }
+    thead { display: table-header-group; }
+
+    /* Remove all shadows & rounded corners for clean print */
+    * {
+        box-shadow: none !important;
+    }
+}
