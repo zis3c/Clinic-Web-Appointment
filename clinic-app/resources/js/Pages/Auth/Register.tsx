@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
@@ -29,9 +30,13 @@ export default function Register() {
 
     const submit = (e: any) => {
         e.preventDefault();
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+        if (step < 4) {
+            nextStep();
+        } else {
+            post(route('register'), {
+                onFinish: () => reset('password', 'password_confirmation'),
+            });
+        }
     };
 
     return (
@@ -179,20 +184,55 @@ export default function Register() {
                         </div>
                         
                         <div>
-                            <InputLabel htmlFor="gender" value="Gender" className="font-semibold text-gray-700" />
-                            <select
-                                id="gender"
-                                name="gender"
-                                value={data.gender}
-                                onChange={(e: any) => setData('gender', e.target.value)}
-                                className="mt-1 block w-full border-gray-200 focus:border-teal-500 focus:ring-teal-500 rounded-xl shadow-sm transition-colors bg-white text-gray-900"
-                                required={step === 2}
-                            >
-                                <option value="" disabled>Select...</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <InputLabel htmlFor="gender" value="Gender" className="font-semibold text-gray-700 mb-1" />
+                            <Listbox value={data.gender} onChange={(val) => setData('gender', val)}>
+                                {({ open }) => (
+                                    <div className="relative">
+                                        <ListboxButton className="mt-1 flex items-center justify-between w-full px-4 py-3 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 rounded-xl shadow-sm bg-white text-left text-sm text-gray-900 transition-all duration-200 outline-none cursor-pointer">
+                                            <span className={data.gender ? "text-gray-900 font-medium" : "text-gray-400"}>
+                                                {data.gender || "Select Gender"}
+                                            </span>
+                                            <svg 
+                                                className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} 
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </ListboxButton>
+
+                                        <ListboxOptions className="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl z-20 overflow-hidden py-1 outline-none animate-in fade-in slide-in-from-top-2 duration-200">
+                                            {['Male', 'Female', 'Other'].map((option) => (
+                                                <ListboxOption
+                                                    key={option}
+                                                    value={option}
+                                                    className={({ active, selected }) =>
+                                                        `flex items-center justify-between w-full px-4 py-3 text-sm text-left cursor-pointer transition-colors ${
+                                                            selected 
+                                                                ? 'bg-teal-50 text-teal-600 font-bold' 
+                                                                : active 
+                                                                    ? 'bg-teal-50/50 text-teal-600' 
+                                                                    : 'text-gray-700'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span>{option}</span>
+                                                            {selected && (
+                                                                <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
+                                                                </svg>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </div>
+                                )}
+                            </Listbox>
                             <InputError message={errors.gender} className="mt-1" />
                         </div>
 
@@ -247,24 +287,65 @@ export default function Register() {
                     <h3 className="text-base font-bold text-gray-800 mb-4">Step 4: Medical Profile</h3>
                     <div className="space-y-4">
                         <div>
-                            <InputLabel htmlFor="blood_group" value="Blood Group" className="font-semibold text-gray-700" />
-                            <select
-                                id="blood_group"
-                                name="blood_group"
-                                value={data.blood_group}
-                                onChange={(e: any) => setData('blood_group', e.target.value)}
-                                className="mt-1 block w-full border-gray-200 focus:border-teal-500 focus:ring-teal-500 rounded-xl shadow-sm transition-colors bg-white text-gray-900"
-                            >
-                                <option value="">Select Blood Group (Optional)</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                            </select>
+                            <InputLabel htmlFor="blood_group" value="Blood Group" className="font-semibold text-gray-700 mb-1" />
+                            <Listbox value={data.blood_group} onChange={(val) => setData('blood_group', val)}>
+                                {({ open }) => (
+                                    <div className="relative">
+                                        <ListboxButton className="mt-1 flex items-center justify-between w-full px-4 py-3 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 rounded-xl shadow-sm bg-white text-left text-sm text-gray-900 transition-all duration-200 outline-none cursor-pointer">
+                                            <span className={data.blood_group ? "text-gray-900 font-medium" : "text-gray-400"}>
+                                                {data.blood_group || "Select Blood Group (Optional)"}
+                                            </span>
+                                            <svg 
+                                                className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} 
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </ListboxButton>
+
+                                        <ListboxOptions className="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl z-20 overflow-hidden py-1 max-h-60 overflow-y-auto outline-none animate-in fade-in slide-in-from-top-2 duration-200">
+                                            <ListboxOption
+                                                value=""
+                                                className={({ active, selected }) =>
+                                                    `w-full px-4 py-3 text-sm text-left cursor-pointer transition-colors ${
+                                                        active ? 'bg-gray-50 text-gray-900' : 'text-gray-500'
+                                                    }`
+                                                }
+                                            >
+                                                Select Blood Group (Optional)
+                                            </ListboxOption>
+                                            {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
+                                                <ListboxOption
+                                                    key={bg}
+                                                    value={bg}
+                                                    className={({ active, selected }) =>
+                                                        `flex items-center justify-between w-full px-4 py-3 text-sm text-left cursor-pointer transition-colors ${
+                                                            selected 
+                                                                ? 'bg-teal-50 text-teal-600 font-bold' 
+                                                                : active 
+                                                                    ? 'bg-teal-50/50 text-teal-600' 
+                                                                    : 'text-gray-700'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span>{bg}</span>
+                                                            {selected && (
+                                                                <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
+                                                                </svg>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </div>
+                                )}
+                            </Listbox>
                             <InputError message={errors.blood_group} className="mt-1" />
                         </div>
 
@@ -310,8 +391,7 @@ export default function Register() {
 
                     {step < 4 ? (
                         <button 
-                            type="button"
-                            onClick={nextStep}
+                            type="submit"
                             className={`${step === 1 ? 'w-full' : 'w-2/3'} flex justify-center items-center py-3 px-4 border border-transparent rounded-full shadow-md text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-teal-500/30 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all duration-300`}
                         >
                             Next Step

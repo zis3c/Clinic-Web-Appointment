@@ -6,28 +6,37 @@ interface ErrorProps {
 }
 
 export default function ErrorPage({ status }: ErrorProps) {
-    const title = {
+    const title: Record<number, string> = {
         503: 'Service Unavailable',
         500: 'Server Error',
         404: 'Page Not Found',
         403: 'Forbidden',
-    }[status] || 'An Error Occurred';
+        405: 'Method Not Allowed',
+        419: 'Page Expired',
+        429: 'Too Many Requests',
+    };
 
-    const description = {
+    const description: Record<number, string> = {
         503: 'Sorry, we are doing some maintenance. Please check back soon.',
         500: 'Whoops, something went wrong on our servers. We are looking into it.',
         404: 'Sorry, the page you are looking for could not be found. It might have been moved or deleted.',
         403: 'Sorry, you are forbidden from accessing this page.',
-    }[status] || 'An unexpected error occurred.';
+        405: 'The action you requested is not supported for this URL.',
+        419: 'Your session has expired. Please refresh the page and try again.',
+        429: 'You have sent too many requests in a short time. Please slow down and try again later.',
+    };
+
+    const displayTitle = title[status] || 'An Error Occurred';
+    const displayDescription = description[status] || 'An unexpected error occurred.';
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-6 py-12 lg:px-8 font-sans antialiased text-gray-900">
-            <Head title={title} />
+            <Head title={displayTitle} />
             
             <div className="text-center w-full max-w-2xl bg-white p-10 md:p-16 rounded-3xl shadow-sm border border-gray-100">
                 <p className="text-5xl font-extrabold text-teal-600 mb-4">{status}</p>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-6">{title}</h1>
-                <p className="text-lg leading-7 text-gray-500 mb-10 max-w-lg mx-auto">{description}</p>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-6">{displayTitle}</h1>
+                <p className="text-lg leading-7 text-gray-500 mb-10 max-w-lg mx-auto">{displayDescription}</p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button

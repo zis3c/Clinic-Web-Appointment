@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -96,7 +97,32 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('success', 'Profile information updated successfully.');
+    }
+
+    /**
+     * Update the user's avatar.
+     */
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $user = $request->user();
+
+            // Delete old avatar if it exists
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+            $user->save();
+        }
+
+        return Redirect::route('profile.edit')->with('success', 'Profile picture updated successfully.');
     }
 
     /**
@@ -141,6 +167,6 @@ class ProfileController extends Controller
             ->where('id', '!=', $request->session()->getId())
             ->delete();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('success', 'Other browser sessions logged out successfully.');
     }
 }

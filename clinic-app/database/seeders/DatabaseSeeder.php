@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@edoc.com',
             'password' => Hash::make('123'),
             'role' => 'admin',
+            'email_verified_at' => now(),
         ]);
 
         // 3. Seed Doctor
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'doctor@edoc.com',
             'password' => Hash::make('123'),
             'role' => 'doctor',
+            'email_verified_at' => now(),
         ]);
 
         Doctor::create([
@@ -64,6 +66,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'patient@edoc.com',
             'password' => Hash::make('123'),
             'role' => 'patient',
+            'email_verified_at' => now(),
         ]);
 
         Patient::create([
@@ -79,6 +82,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'emhashenudara@gmail.com',
             'password' => Hash::make('123'),
             'role' => 'patient',
+            'email_verified_at' => now(),
         ]);
 
         Patient::create([
@@ -110,12 +114,25 @@ class DatabaseSeeder extends Seeder
             ]);
 
             $apptNum = 1;
+            $statuses = ['pending', 'confirmed', 'completed'];
             foreach ($patients as $patient) {
+                $status = $statuses[$apptNum % count($statuses)];
+                $checkedIn = ($status === 'completed');
+                
+                // Set at least one confirmed appointment to checked_in so the doctor dashboard shows checked-in patients
+                if ($apptNum === 3) {
+                    $status = 'confirmed';
+                    $checkedIn = true;
+                }
+
                 \App\Models\Appointment::create([
                     'patient_id' => $patient->id,
                     'schedule_id' => $schedule->id,
                     'appointment_number' => $apptNum++,
                     'date' => $schedule->date,
+                    'status' => $status,
+                    'checked_in' => $checkedIn,
+                    'checked_in_at' => $checkedIn ? now()->subMinutes(rand(10, 60)) : null,
                 ]);
             }
         }

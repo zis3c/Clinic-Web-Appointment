@@ -14,7 +14,7 @@ export default function GuestLayout({ children, title, description }) {
                 <div className="w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply"></div>
             </div>
 
-            <div className="relative z-10 w-full max-w-md px-6 py-12">
+            <div className="relative z-10 w-full max-w-lg px-6 py-12">
                 <div className="text-center mb-8 flex flex-col items-center">
                     <Link href="/" className="flex items-center gap-2 group mb-6">
                         <div className="w-12 h-12 bg-gradient-to-tr from-teal-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-3xl shadow-lg transform group-hover:rotate-12 transition-transform duration-300">

@@ -17,9 +17,14 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/appointments/{appointment}/cancel-from-email', [PatientController::class, 'cancelFromEmail'])
+    ->name('appointments.cancel-from-email')
+    ->middleware('signed');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/sessions', [ProfileController::class, 'destroyOtherBrowserSessions'])->name('profile.sessions.destroy');
 
@@ -43,6 +48,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/schedules/{schedule}', [AdminController::class, 'destroySchedule'])->name('schedules.destroy');
 
         Route::get('/appointments', [AdminController::class, 'appointments'])->name('appointments.index');
+        Route::get('/appointments/search', [AdminController::class, 'searchAppointmentsForCheckIn'])->name('appointments.search');
+        Route::patch('/appointments/{appointment}/status', [AdminController::class, 'updateAppointmentStatus'])->name('appointments.status.update');
+        Route::post('/appointments/check-in', [AdminController::class, 'checkInAppointmentByCode'])->name('appointments.check-in');
         Route::delete('/appointments/bulk', [AdminController::class, 'bulkDestroyAppointments'])->name('appointments.bulk-destroy');
         Route::delete('/appointments/{appointment}', [AdminController::class, 'destroyAppointment'])->name('appointments.destroy');
 
@@ -58,6 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/schedules/{schedule}', [DoctorController::class, 'destroySchedule'])->name('schedules.destroy');
 
         Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments.index');
+        Route::patch('/appointments/{appointment}/complete', [DoctorController::class, 'completeAppointment'])->name('appointments.complete');
         Route::delete('/appointments/bulk', [DoctorController::class, 'bulkDestroyAppointments'])->name('appointments.bulk-destroy');
         Route::delete('/appointments/{appointment}', [DoctorController::class, 'destroyAppointment'])->name('appointments.destroy');
 
@@ -65,14 +74,16 @@ Route::middleware('auth')->group(function () {
     });
 
     // Patient Routes
-    Route::middleware('role:patient')->prefix('patient')->name('patient.')->group(function () {
+    Route::middleware(['role:patient', 'verified'])->prefix('patient')->name('patient.')->group(function () {
         Route::get('/dashboard', [PatientController::class, 'dashboard'])->name('dashboard');
         
         Route::get('/doctors', [PatientController::class, 'doctors'])->name('doctors.index');
         
         Route::get('/schedules', [PatientController::class, 'schedules'])->name('schedules.index');
         Route::get('/appointments', [PatientController::class, 'appointments'])->name('appointments.index');
-        Route::post('/appointments', [PatientController::class, 'storeAppointment'])->name('appointments.store');
+        Route::post('/appointments', [PatientController::class, 'storeAppointment'])
+            ->middleware('throttle:3,1')
+            ->name('appointments.store');
         Route::delete('/appointments/{appointment}', [PatientController::class, 'destroyAppointment'])->name('appointments.destroy');
     });
 });

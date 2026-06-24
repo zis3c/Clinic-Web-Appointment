@@ -29,7 +29,7 @@ export default function Welcome({ auth }: any) {
 
     return (
         <>
-            <Head title="Welcome to JanjiCare" />
+            <Head title="Welcome" />
             <div className="relative min-h-screen bg-gray-50 text-gray-900 selection:bg-teal-500 selection:text-white font-sans antialiased">
                 
                 {/* Navbar */}

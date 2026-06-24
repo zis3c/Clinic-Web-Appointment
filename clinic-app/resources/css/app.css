@@ -62,7 +62,11 @@ html.lenis, html.lenis body {
 
 .custom-scrollbar::-webkit-scrollbar-track:vertical {
   background: transparent;
-  margin-top: 49px; /* Matches exact height of thead (py-4 + text-xs = 48px + 1px border) */
+  margin-top: 0px;
+}
+
+.custom-scrollbar:has(table)::-webkit-scrollbar-track:vertical {
+  margin-top: 49px; /* Matches exact height of thead (py-4 + text-xs = 48px + 1px border) to not overlap sticky header */
 }
 
 .modal-scrollbar::-webkit-scrollbar-track:vertical {
@@ -76,4 +80,15 @@ html.lenis, html.lenis body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8; /* Tailwind gray-400 */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

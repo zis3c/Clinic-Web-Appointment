@@ -16,6 +16,8 @@ class Patient extends Model
 
     protected $casts = [
         'dob' => 'date',
+        'allergies' => 'encrypted',
+        'medical_conditions' => 'encrypted',
     ];
 
     public function user()

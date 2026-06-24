@@ -3,6 +3,7 @@ import SidebarLayout from '@/Layouts/SidebarLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Dialog, Transition } from '@headlessui/react';
 import { formatTime12Hour } from '../../Utils/time';
+import DoctorDetailsModal from '@/Components/DoctorDetailsModal';
 
 declare const route: any;
 
@@ -10,6 +11,8 @@ export default function Schedules({ auth, schedules }: any) {
     const [selectedSchedule, setSelectedSchedule] = useState<any>(null);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [confirmCheckbox, setConfirmCheckbox] = useState(false);
+    const [selectedDoctorForModal, setSelectedDoctorForModal] = useState<any>(null);
 
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         schedule_id: '',
@@ -24,6 +27,7 @@ export default function Schedules({ auth, schedules }: any) {
 
     const closeBookingModal = () => {
         setShowBookingModal(false);
+        setConfirmCheckbox(false);
         // We do not set selectedSchedule to null here so the modal retains its content during the exit animation.
         // It will be updated the next time openBookingModal is called.
         reset();
@@ -104,12 +108,23 @@ export default function Schedules({ auth, schedules }: any) {
                                     return (
                                         <tr key={schedule.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className={`h-10 w-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-inner ${isFull ? 'bg-gray-400' : 'bg-gradient-to-br from-teal-400 to-blue-500'}`}>
-                                                        {schedule.doctor.user.name.charAt(0)}
+                                                <div 
+                                                    onClick={() => setSelectedDoctorForModal(schedule.doctor)}
+                                                    className="flex items-center cursor-pointer group/doctor"
+                                                >
+                                                    <div className={`h-10 w-10 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-bold shadow-inner group-hover/doctor:scale-105 transition-transform duration-200 ${isFull ? 'bg-gray-400' : 'bg-gradient-to-br from-teal-400 to-blue-500'}`}>
+                                                        {schedule.doctor.user?.avatar ? (
+                                                            <img 
+                                                                src={`/storage/${schedule.doctor.user.avatar}`} 
+                                                                alt={schedule.doctor.user.name} 
+                                                                className="h-full w-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            schedule.doctor.user.name.charAt(0)
+                                                        )}
                                                     </div>
                                                     <div className="ml-4">
-                                                        <div className="text-sm font-bold text-gray-900">Dr. {schedule.doctor.user.name}</div>
+                                                        <div className="text-sm font-bold text-gray-900 group-hover/doctor:text-blue-600 transition-colors">Dr. {schedule.doctor.user.name}</div>
                                                         <div className="text-sm text-blue-600 font-semibold">{schedule.doctor.specialty.name}</div>
                                                     </div>
                                                 </div>
@@ -221,6 +236,19 @@ export default function Schedules({ auth, schedules }: any) {
                                                         </div>
                                                     )}
                                                     
+                                                    <div className="mb-6 flex items-start gap-3 bg-teal-50/50 p-4 rounded-xl border border-teal-100/50">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            id="confirm-checkbox"
+                                                            checked={confirmCheckbox}
+                                                            onChange={(e) => setConfirmCheckbox(e.target.checked)}
+                                                            className="mt-1 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                                                        />
+                                                        <label htmlFor="confirm-checkbox" className="text-xs text-slate-600 select-none cursor-pointer leading-relaxed">
+                                                            I confirm that I want to book this appointment and will attend the scheduled session.
+                                                        </label>
+                                                    </div>
+                                                    
                                                     <div className="flex gap-3">
                                                         <button 
                                                             type="button" 
@@ -231,8 +259,8 @@ export default function Schedules({ auth, schedules }: any) {
                                                         </button>
                                                         <button 
                                                             type="submit" 
-                                                            disabled={processing}
-                                                            className="flex-1 py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-lg rounded-xl shadow-md disabled:opacity-50 transition-all transform hover:scale-[1.02] focus:outline-none"
+                                                            disabled={processing || !confirmCheckbox}
+                                                            className="flex-1 py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-lg rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all transform enabled:hover:scale-[1.02] focus:outline-none"
                                                         >
                                                             Confirm Booking
                                                         </button>
@@ -248,6 +276,13 @@ export default function Schedules({ auth, schedules }: any) {
                 </Transition>
 
             </div>
+
+            {/* Doctor Profile Details Modal */}
+            <DoctorDetailsModal 
+                show={selectedDoctorForModal !== null} 
+                onClose={() => setSelectedDoctorForModal(null)} 
+                doctor={selectedDoctorForModal} 
+            />
         </SidebarLayout>
     );
 }

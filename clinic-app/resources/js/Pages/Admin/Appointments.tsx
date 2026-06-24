@@ -82,6 +82,25 @@ export default function Appointments({ auth, appointments }: any) {
             header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">Manage Appointments</h2>}
         >
             <Head title="Manage Appointments" />
+            
+            <style dangerouslySetInnerHTML={{__html: `
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-6px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .animate-slide-down {
+                    animation: slideDown 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                th, td {
+                    transition: width 350ms cubic-bezier(0.4, 0, 0.2, 1), opacity 350ms cubic-bezier(0.4, 0, 0.2, 1), padding 350ms cubic-bezier(0.4, 0, 0.2, 1);
+                }
+            `}} />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 
@@ -155,16 +174,77 @@ export default function Appointments({ auth, appointments }: any) {
                     <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
 
                     <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
-                        <table className="min-w-full divide-y divide-gray-200">
+                         <table className="min-w-full divide-y divide-gray-200 table-fixed">
                             <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                 <tr>
-                                    {isBulkMode && <th className="px-6 py-4 w-10"></th>}
-                                    <th className="px-6 py-4 w-10"></th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Doctor</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Bookings</th>
-                                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th 
+                                        className="text-left overflow-hidden whitespace-nowrap align-middle"
+                                        style={{ 
+                                            width: isBulkMode ? '48px' : '0px',
+                                            minWidth: isBulkMode ? '48px' : '0px',
+                                            maxWidth: isBulkMode ? '48px' : '0px',
+                                            opacity: isBulkMode ? 1 : 0,
+                                            paddingLeft: isBulkMode ? '1.5rem' : '0px',
+                                            paddingRight: isBulkMode ? '0.5rem' : '0px',
+                                            paddingTop: isBulkMode ? '1rem' : '0px',
+                                            paddingBottom: isBulkMode ? '1rem' : '0px',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    ></th>
+                                    <th 
+                                        className="px-4 py-4 text-center whitespace-nowrap align-middle"
+                                        style={{ 
+                                            width: '48px',
+                                            minWidth: '48px',
+                                            maxWidth: '48px',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    ></th>
+                                    <th 
+                                        className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap align-middle"
+                                        style={{
+                                            width: isBulkMode ? '27%' : '31%',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Session
+                                    </th>
+                                    <th 
+                                        className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap align-middle"
+                                        style={{
+                                            width: '25%',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Doctor
+                                    </th>
+                                    <th 
+                                        className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap align-middle"
+                                        style={{
+                                            width: '20%',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Date & Time
+                                    </th>
+                                    <th 
+                                        className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap align-middle"
+                                        style={{
+                                            width: '10%',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Bookings
+                                    </th>
+                                    <th 
+                                        className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap align-middle"
+                                        style={{
+                                            width: '10%',
+                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -181,19 +261,41 @@ export default function Appointments({ auth, appointments }: any) {
                                                 onClick={() => toggleSession(group.scheduleId)}
                                                 className={`cursor-pointer transition-colors ${isExpanded ? 'bg-blue-50/30' : 'hover:bg-blue-50'}`}
                                             >
-                                                {isBulkMode && (
-                                                    <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                                        <input 
-                                                            type="checkbox" 
-                                                            checked={allGroupSelected}
-                                                            onChange={() => handleSelectGroup(groupAptIds)}
-                                                            className="w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                            title="Select all in this session"
-                                                        />
-                                                    </td>
-                                                )}
-                                                <td className="px-4 py-4 whitespace-nowrap">
-                                                    <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                                <td 
+                                                    className="whitespace-nowrap align-middle overflow-hidden" 
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    style={{ 
+                                                        width: isBulkMode ? '48px' : '0px',
+                                                        minWidth: isBulkMode ? '48px' : '0px',
+                                                        maxWidth: isBulkMode ? '48px' : '0px',
+                                                        opacity: isBulkMode ? 1 : 0,
+                                                        paddingLeft: isBulkMode ? '1.5rem' : '0px',
+                                                        paddingRight: isBulkMode ? '0.5rem' : '0px',
+                                                        paddingTop: isBulkMode ? '1rem' : '0px',
+                                                        paddingBottom: isBulkMode ? '1rem' : '0px',
+                                                        transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                                    }}
+                                                >
+                                                    <div 
+                                                        style={{ 
+                                                            opacity: isBulkMode ? 1 : 0,
+                                                            transform: isBulkMode ? 'scale(1)' : 'scale(0.85)',
+                                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                                        }}
+                                                    >
+                                                        {isBulkMode && (
+                                                            <input 
+                                                                type="checkbox" 
+                                                                checked={allGroupSelected}
+                                                                onChange={() => handleSelectGroup(groupAptIds)}
+                                                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                title="Select all in this session"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-4 whitespace-nowrap text-center align-middle">
+                                                    <svg className={`w-5 h-5 text-gray-400 mx-auto transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm font-bold text-gray-900">{group.schedule.title}</div>
@@ -234,18 +336,42 @@ export default function Appointments({ auth, appointments }: any) {
                                                             setShowPatientModal(true);
                                                         }
                                                     }}
-                                                    className={`cursor-pointer transition-colors bg-gray-50/50 ${selectedIds.includes(apt.id) ? 'bg-blue-50/70' : 'hover:bg-blue-50/40'}`}
+                                                    className={`cursor-pointer transition-colors bg-gray-50/50 border-b border-gray-100 ${
+                                                        selectedIds.includes(apt.id) ? 'bg-blue-50/70' : 'hover:bg-blue-50/40'
+                                                    } animate-slide-down`}
                                                 >
-                                                    {isBulkMode && (
-                                                        <td className="pl-6 pr-2 py-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                                            <input 
-                                                                type="checkbox" 
-                                                                checked={selectedIds.includes(apt.id)}
-                                                                onChange={() => handleSelect(apt.id)}
-                                                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                            />
-                                                        </td>
-                                                    )}
+                                                    <td 
+                                                        className="whitespace-nowrap align-middle overflow-hidden" 
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        style={{ 
+                                                            width: isBulkMode ? '48px' : '0px',
+                                                            minWidth: isBulkMode ? '48px' : '0px',
+                                                            maxWidth: isBulkMode ? '48px' : '0px',
+                                                            opacity: isBulkMode ? 1 : 0,
+                                                            paddingLeft: isBulkMode ? '1.5rem' : '0px',
+                                                            paddingRight: isBulkMode ? '0.5rem' : '0px',
+                                                            paddingTop: isBulkMode ? '0.75rem' : '0px',
+                                                            paddingBottom: isBulkMode ? '0.75rem' : '0px',
+                                                            transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                                        }}
+                                                    >
+                                                        <div 
+                                                            style={{ 
+                                                                opacity: isBulkMode ? 1 : 0,
+                                                                transform: isBulkMode ? 'scale(1)' : 'scale(0.85)',
+                                                                transition: 'all 350ms cubic-bezier(0.4, 0, 0.2, 1)'
+                                                            }}
+                                                        >
+                                                            {isBulkMode && (
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    checked={selectedIds.includes(apt.id)}
+                                                                    onChange={() => handleSelect(apt.id)}
+                                                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </td>
                                                     <td className="px-4 py-3 whitespace-nowrap">
                                                         <div className="w-5 flex justify-center">
                                                             <div className="w-0.5 h-5 bg-gray-200 rounded-full"></div>
@@ -267,14 +393,84 @@ export default function Appointments({ auth, appointments }: any) {
                                                             Apt #{apt.appointment_number}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-3 whitespace-nowrap"></td>
-                                                    <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); setAppointmentToCancel(apt.id); }}
-                                                            className="text-rose-600 hover:text-rose-900 font-semibold focus:outline-none text-xs bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg transition-colors"
-                                                        >
-                                                            Cancel
-                                                        </button>
+                                                    <td className="px-6 py-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                                        <div className="flex items-center gap-1.5">
+                                                            {!!apt.checked_in && (
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 bg-teal-50 text-teal-700 border border-teal-200/50">
+                                                                    Arrived
+                                                                </span>
+                                                            )}
+                                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 border ${
+                                                                apt.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200/50' :
+                                                                apt.status === 'confirmed' ? 'bg-blue-50 text-blue-700 border-blue-200/50' :
+                                                                apt.status === 'rejected' ? 'bg-rose-50 text-rose-700 border-rose-200/50' :
+                                                                'bg-emerald-50 text-emerald-700 border-emerald-200/50'
+                                                            }`}>
+                                                                {apt.status ? apt.status.charAt(0).toUpperCase() + apt.status.slice(1) : 'Pending'}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                                                        <div className="flex items-center justify-end gap-2">
+                                                            {apt.status === 'pending' && (
+                                                                <>
+                                                                    <Link
+                                                                        href={route('admin.appointments.status.update', apt.id)}
+                                                                        method="patch"
+                                                                        data={{ status: 'confirmed' }}
+                                                                        as="button"
+                                                                        preserveScroll
+                                                                        title="Approve Appointment"
+                                                                        className="text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 p-2 rounded-xl border border-teal-100 transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+                                                                    >
+                                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                                                        </svg>
+                                                                    </Link>
+                                                                    <Link
+                                                                        href={route('admin.appointments.status.update', apt.id)}
+                                                                        method="patch"
+                                                                        data={{ status: 'rejected' }}
+                                                                        as="button"
+                                                                        preserveScroll
+                                                                        title="Reject Appointment"
+                                                                        className="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded-xl border border-rose-100 transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+                                                                    >
+                                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                                                        </svg>
+                                                                    </Link>
+                                                                </>
+                                                            )}
+                                                            {apt.status !== 'rejected' && apt.status !== 'completed' && (
+                                                                <>
+                                                                    {apt.status === 'confirmed' && !apt.checked_in && (
+                                                                        <Link
+                                                                            href={route('admin.appointments.check-in')}
+                                                                            method="post"
+                                                                            data={{ code: `APT-${apt.id}` }}
+                                                                            as="button"
+                                                                            preserveScroll
+                                                                            title="Check In Patient"
+                                                                            className="text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 p-2 rounded-xl border border-teal-100 transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+                                                                        >
+                                                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                                            </svg>
+                                                                        </Link>
+                                                                    )}
+                                                                    <button 
+                                                                        onClick={() => setAppointmentToCancel(apt.id)}
+                                                                        title="Cancel Appointment"
+                                                                        className="text-gray-500 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-2 rounded-xl border border-gray-200 transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer"
+                                                                    >
+                                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}

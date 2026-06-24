@@ -11,17 +11,24 @@ use App\Models\Appointment;
 use App\Models\Specialty;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
+        $appointments = Appointment::with(['patient.user', 'schedule.doctor.user'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         return Inertia::render('Admin/Dashboard', [
             'doctorCount' => Doctor::count(),
             'patientCount' => Patient::count(),
             'appointmentCount' => Appointment::count(),
             'scheduleCount' => Schedule::count(),
+            'appointments' => $appointments,
         ]);
     }
 
@@ -200,6 +207,8 @@ class AdminController extends Controller
 
     public function destroyAppointment(Appointment $appointment)
     {
+        Gate::authorize('delete', $appointment);
+
         $appointment->delete();
         return redirect()->back()->with('success', 'Appointment deleted successfully.');
     }
@@ -214,6 +223,135 @@ class AdminController extends Controller
         Appointment::whereIn('id', $request->appointment_ids)->delete();
         
         return redirect()->back()->with('success', 'Selected appointments deleted successfully.');
+    }
+
+    public function updateAppointmentStatus(Request $request, Appointment $appointment)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,confirmed,rejected,completed',
+        ]);
+
+        $oldStatus = $appointment->status;
+
+        $appointment->update([
+            'status' => $request->status,
+        ]);
+
+        // Send status update email if the status changed and is confirmed, rejected, or completed
+        if ($oldStatus !== $request->status && in_array($request->status, ['confirmed', 'rejected', 'completed'])) {
+            try {
+                $appointment->load(['patient.user', 'schedule.doctor.user']);
+                \Illuminate\Support\Facades\Mail::to($appointment->patient->user->email)->send(
+                    new \App\Mail\AppointmentStatusMail($appointment, $request->status)
+                );
+            } catch (\Exception $e) {
+                \Log::error('Failed to send status update email: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('success', 'Appointment status updated to ' . ucfirst($request->status) . ' successfully.');
+    }
+
+    public function checkInAppointmentByCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $input = trim($request->code);
+        $appointmentId = str_replace('APT-', '', $input);
+        
+        $appointment = null;
+
+        // 1. Try finding by direct Appointment Code / ID
+        if (is_numeric($appointmentId)) {
+            $appointment = Appointment::with(['patient.user', 'schedule.doctor.user'])->find($appointmentId);
+        }
+
+        // 2. Try finding by patient's National Identity Card (NIC) number
+        if (!$appointment) {
+            $appointment = Appointment::with(['patient.user', 'schedule.doctor.user'])
+                ->whereHas('patient', function ($query) use ($input) {
+                    $query->where('nic', $input);
+                })
+                ->whereNotIn('status', ['rejected', 'completed'])
+                ->latest()
+                ->first();
+        }
+
+        // 3. Try finding by patient's name
+        if (!$appointment) {
+            $appointment = Appointment::with(['patient.user', 'schedule.doctor.user'])
+                ->whereHas('patient.user', function ($query) use ($input) {
+                    $query->where('name', 'like', '%' . $input . '%');
+                })
+                ->whereNotIn('status', ['rejected', 'completed'])
+                ->latest()
+                ->first();
+        }
+
+        if (!$appointment) {
+            return redirect()->back()->withErrors(['code' => 'No active appointment found for this Name, IC/NIC, or Code.']);
+        }
+
+        if ($appointment->status === 'rejected') {
+            return redirect()->back()->withErrors(['code' => 'This appointment has been rejected. Check-in is not allowed.']);
+        }
+
+        $appointment->update([
+            'checked_in' => true,
+            'checked_in_at' => now(),
+            'status' => 'confirmed', // Ensure it is confirmed if they are checking in
+        ]);
+
+        return redirect()->back()->with('success', 'Patient ' . $appointment->patient->user->name . ' checked in successfully for Doctor ' . $appointment->schedule->doctor->user->name . '!');
+    }
+
+    public function searchAppointmentsForCheckIn(Request $request)
+    {
+        $query = trim($request->query('q'));
+
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $appointmentId = str_replace('APT-', '', $query);
+
+        $appointments = Appointment::with(['patient.user', 'schedule.doctor.user'])
+            ->whereNotIn('status', ['rejected', 'completed'])
+            ->where('checked_in', false)
+            ->where(function ($q) use ($query, $appointmentId) {
+                if (is_numeric($appointmentId)) {
+                    $q->where('id', $appointmentId);
+                }
+                $q->orWhereHas('patient', function ($p) use ($query) {
+                    $p->where('nic', 'like', '%' . $query . '%');
+                })
+                ->orWhereHas('patient.user', function ($u) use ($query) {
+                    $u->where('name', 'like', '%' . $query . '%');
+                });
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $results = $appointments->map(function ($apt) {
+            $time = \Carbon\Carbon::parse($apt->schedule->time);
+            $formattedTime = $time->minute === 0 ? $time->format('g a') : $time->format('g:i a');
+
+            return [
+                'id' => $apt->id,
+                'code' => 'APT-' . $apt->id,
+                'patient_name' => $apt->patient->user->name,
+                'patient_nic' => $apt->patient->nic,
+                'doctor_name' => $apt->schedule->doctor->user->name,
+                'time' => $formattedTime,
+                'date' => $apt->schedule->date,
+                'status' => $apt->status,
+            ];
+        });
+
+        return response()->json($results);
     }
 
     // --- REPORTS ---

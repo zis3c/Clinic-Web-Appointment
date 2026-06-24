@@ -122,8 +122,16 @@ export default function SidebarLayout({ user, header, children }) {
                         title={isCollapsed ? "Profile Settings" : undefined}
                         className={`flex items-center flex-1 min-w-0 rounded-xl transition-all duration-200 group hover:bg-gray-50 ${isCollapsed ? 'justify-center py-2 px-0' : 'gap-3 px-3 py-2'}`}
                     >
-                        <div className={`rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
-                            {user.name.charAt(0)}
+                        <div className={`rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-blue-700 font-bold group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
+                            {user.avatar ? (
+                                <img 
+                                    src={`/storage/${user.avatar}`} 
+                                    alt={user.name} 
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : (
+                                user.name.charAt(0)
+                            )}
                         </div>
                         <div className={`flex-1 min-w-0 transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 hidden' : 'opacity-100'}`}>
                             <p className="text-sm font-bold text-gray-900 truncate group-hover:text-blue-700 transition-colors">{user.name}</p>

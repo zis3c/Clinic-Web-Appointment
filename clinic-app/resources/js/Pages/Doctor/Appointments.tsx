@@ -180,67 +180,110 @@ export default function Appointments({ auth, appointments }: any) {
                     
                     <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
                         <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
-                                <tr>
-                                    {isBulkMode && <th className="px-6 py-4 text-left w-12"></th>}
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Patient Details</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session Info</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Apt No.</th>
-                                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredAppointments.map((appointment: any) => (
-                                    <tr key={appointment.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(appointment.id) ? 'bg-blue-50/50' : ''}`}>
-                                        {isBulkMode && (
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 cursor-pointer"
-                                                    checked={selectedIds.includes(appointment.id)}
-                                                    onChange={() => handleSelect(appointment.id)}
-                                                />
-                                            </td>
-                                        )}
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold">
-                                                    {appointment.patient.user.name.charAt(0)}
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="text-sm font-bold text-gray-900">{appointment.patient.user.name}</div>
-                                                    <div className="text-sm text-gray-500">Tel: {appointment.patient.tel}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-bold text-gray-900">{appointment.schedule.title}</div>
-                                            <div className="text-sm text-gray-500">{new Date(appointment.date).toLocaleDateString()} at {formatTime12Hour(appointment.schedule.time)}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                #{appointment.appointment_number}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex items-center justify-end gap-3">
-                                                <button 
-                                                    onClick={() => {
-                                                        setViewPatient(appointment.patient);
-                                                        setShowPatientModal(true);
-                                                    }}
-                                                    className="text-blue-600 hover:text-blue-900 font-semibold focus:outline-none bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                                                >
-                                                    View Details
-                                                </button>
-                                                <button 
-                                                    onClick={() => setAppointmentToCancel(appointment.id)}
-                                                    className="text-rose-600 hover:text-rose-900 font-semibold focus:outline-none bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </td>
+                                    <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
+                                        <tr>
+                                            {isBulkMode && <th className="px-6 py-4 text-left w-12"></th>}
+                                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Patient Details</th>
+                                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session Info</th>
+                                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Apt No.</th>
+                                            <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {filteredAppointments.map((appointment: any) => (
+                                            <tr key={appointment.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(appointment.id) ? 'bg-blue-50/50' : ''}`}>
+                                                {isBulkMode && (
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 cursor-pointer"
+                                                            checked={selectedIds.includes(appointment.id)}
+                                                            onChange={() => handleSelect(appointment.id)}
+                                                        />
+                                                    </td>
+                                                )}
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center">
+                                                        <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold">
+                                                            {appointment.patient.user.name.charAt(0)}
+                                                        </div>
+                                                        <div className="ml-4">
+                                                            <div className="text-sm font-bold text-gray-900">{appointment.patient.user.name}</div>
+                                                            <div className="text-sm text-gray-500">Tel: {appointment.patient.tel}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-bold text-gray-900">{appointment.schedule.title}</div>
+                                                    <div className="text-sm text-gray-500">{new Date(appointment.date).toLocaleDateString()} at {formatTime12Hour(appointment.schedule.time)}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex flex-col space-y-1">
+                                                        <div className="flex items-center gap-1.5">
+                                                            {!!appointment.checked_in && (
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 bg-teal-50 text-teal-700 border border-teal-200/50">
+                                                                    Arrived
+                                                                </span>
+                                                            )}
+                                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 border ${
+                                                                appointment.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200/50' :
+                                                                appointment.status === 'confirmed' ? 'bg-blue-50 text-blue-700 border-blue-200/50' :
+                                                                appointment.status === 'rejected' ? 'bg-rose-50 text-rose-700 border-rose-200/50' :
+                                                                'bg-emerald-50 text-emerald-700 border-emerald-200/50'
+                                                            }`}>
+                                                                {appointment.status ? appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) : 'Pending'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                        #{appointment.appointment_number}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <div className="flex items-center justify-end gap-2.5">
+                                                        <button 
+                                                            onClick={() => {
+                                                                setViewPatient(appointment.patient);
+                                                                setShowPatientModal(true);
+                                                            }}
+                                                            title="View Patient Details"
+                                                            className="text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                                                        >
+                                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                            </svg>
+                                                        </button>
+                                                        {!!appointment.checked_in && appointment.status === 'confirmed' && (
+                                                            <Link
+                                                                href={route('doctor.appointments.complete', appointment.id)}
+                                                                method="patch"
+                                                                as="button"
+                                                                preserveScroll
+                                                                title="Complete Consultation"
+                                                                className="text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                                                            >
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </Link>
+                                                        )}
+                                                        {appointment.status !== 'rejected' && appointment.status !== 'completed' && (
+                                                            <button 
+                                                                onClick={() => setAppointmentToCancel(appointment.id)}
+                                                                title="Cancel Appointment"
+                                                                className="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                                                            >
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                                                </svg>
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
                                     </tr>
                                 ))}
                             </tbody>

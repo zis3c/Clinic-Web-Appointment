@@ -3,9 +3,11 @@ import SidebarLayout from '@/Layouts/SidebarLayout';
 import Modal from '@/Components/Modal';
 import { Head, Link } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
+import DoctorDetailsModal from '@/Components/DoctorDetailsModal';
 
 export default function Appointments({ auth, appointments }: any) {
     const [appointmentToCancel, setAppointmentToCancel] = useState<number | null>(null);
+    const [selectedDoctorForModal, setSelectedDoctorForModal] = useState<any>(null);
 
     return (
         <SidebarLayout
@@ -42,6 +44,7 @@ export default function Appointments({ auth, appointments }: any) {
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Apt No.</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Doctor</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session Info</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
                                     <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -54,12 +57,24 @@ export default function Appointments({ auth, appointments }: any) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold">
-                                                    {appointment.schedule.doctor.user.name.charAt(0)}
+                                            <div 
+                                                onClick={() => setSelectedDoctorForModal(appointment.schedule.doctor)}
+                                                className="flex items-center cursor-pointer group/doctor"
+                                            >
+                                                <div className="h-10 w-10 rounded-full overflow-hidden bg-teal-100 flex items-center justify-center text-teal-700 font-bold group-hover/doctor:scale-105 transition-transform duration-200">
+                                                    {appointment.schedule.doctor.user?.avatar ? (
+                                                        <img 
+                                                            src={`/storage/${appointment.schedule.doctor.user.avatar}`} 
+                                                            alt={appointment.schedule.doctor.user.name} 
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        appointment.schedule.doctor.user.name.charAt(0)
+                                                    )}
                                                 </div>
                                                 <div className="ml-4">
-                                                    <div className="text-sm font-bold text-gray-900">Dr. {appointment.schedule.doctor.user.name}</div>
+                                                    <div className="text-sm font-bold text-gray-900 group-hover/doctor:text-teal-600 transition-colors">Dr. {appointment.schedule.doctor.user.name}</div>
+                                                    <div className="text-xs text-gray-500 font-semibold">{appointment.schedule.doctor.specialty?.name}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -67,13 +82,39 @@ export default function Appointments({ auth, appointments }: any) {
                                             <div className="text-sm font-bold text-gray-900">{appointment.schedule.title}</div>
                                             <div className="text-sm text-gray-500">{new Date(appointment.date).toLocaleDateString()} at {formatTime12Hour(appointment.schedule.time)}</div>
                                         </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex flex-col space-y-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    {!!appointment.checked_in && (
+                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 bg-teal-50 text-teal-700 border border-teal-200/50">
+                                                            Arrived
+                                                        </span>
+                                                    )}
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold leading-5 border ${
+                                                        appointment.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200/50' :
+                                                        appointment.status === 'confirmed' ? 'bg-blue-50 text-blue-700 border-blue-200/50' :
+                                                        appointment.status === 'rejected' ? 'bg-rose-50 text-rose-700 border-rose-200/50' :
+                                                        'bg-emerald-50 text-emerald-700 border-emerald-200/50'
+                                                    }`}>
+                                                        {appointment.status ? appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) : 'Pending'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button 
-                                                onClick={() => setAppointmentToCancel(appointment.id)}
-                                                className="text-rose-600 hover:text-rose-900 font-semibold focus:outline-none"
-                                            >
-                                                Cancel Appointment
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2.5">
+                                                {appointment.status !== 'rejected' && appointment.status !== 'completed' && (
+                                                    <button 
+                                                        onClick={() => setAppointmentToCancel(appointment.id)}
+                                                        title="Cancel Appointment"
+                                                        className="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95 border border-rose-100"
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -121,6 +162,13 @@ export default function Appointments({ auth, appointments }: any) {
                     </div>
                 </div>
             </Modal>
+
+            {/* Doctor Profile Details Modal */}
+            <DoctorDetailsModal 
+                show={selectedDoctorForModal !== null} 
+                onClose={() => setSelectedDoctorForModal(null)} 
+                doctor={selectedDoctorForModal} 
+            />
         </SidebarLayout>
     );
 }

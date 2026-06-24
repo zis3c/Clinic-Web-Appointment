@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->respond(function (Response $response, \Throwable $exception, Request $request) {
             $status = $response->getStatusCode();
 
-            if (in_array($status, [500, 503, 404, 403])) {
+            if (in_array($status, [500, 503, 404, 403, 405, 419, 429])) {
                 // For 500 errors, show default Laravel error page on local for debugging
                 if ($status === 500 && app()->environment(['local', 'testing'])) {
                     return $response;

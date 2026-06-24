@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Schedule;
 use App\Models\Appointment;
 
@@ -46,6 +47,15 @@ class DoctorController extends Controller
           ->take(5)
           ->get();
 
+        // Waiting room: checked in patients ready for consultation
+        $waiting_room = Appointment::whereHas('schedule', function ($q) use ($doctor) {
+            $q->where('doctor_id', $doctor->id);
+        })->where('checked_in', true)
+          ->where('status', 'confirmed')
+          ->with(['patient.user', 'schedule'])
+          ->orderBy('checked_in_at', 'asc')
+          ->get();
+
         return Inertia::render('Doctor/Dashboard', [
             'schedules' => $schedules,
             'stats' => [
@@ -54,6 +64,7 @@ class DoctorController extends Controller
                 'total_patients' => $total_patients,
             ],
             'recent_appointments' => $recent_appointments,
+            'waiting_room' => $waiting_room,
         ]);
     }
 
@@ -122,13 +133,34 @@ class DoctorController extends Controller
 
     public function destroyAppointment(Appointment $appointment)
     {
-        // Ensure the doctor owns the schedule this appointment is for
+        Gate::authorize('delete', $appointment);
+
+        $appointment->delete();
+        return redirect()->back()->with('success', 'Appointment cancelled successfully.');
+    }
+
+    public function completeAppointment(Request $request, Appointment $appointment)
+    {
+        // Ensure the doctor owns this schedule/appointment
         if ($appointment->schedule->doctor_id !== Auth::user()->doctor->id) {
             abort(403);
         }
 
-        $appointment->delete();
-        return redirect()->back()->with('success', 'Appointment cancelled successfully.');
+        $appointment->update([
+            'status' => 'completed',
+        ]);
+
+        // Send completed status update email
+        try {
+            $appointment->load(['patient.user', 'schedule.doctor.user']);
+            \Illuminate\Support\Facades\Mail::to($appointment->patient->user->email)->send(
+                new \App\Mail\AppointmentStatusMail($appointment, 'completed')
+            );
+        } catch (\Exception $e) {
+            \Log::error('Failed to send consultation completed email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Consultation marked as completed successfully.');
     }
 
     public function bulkDestroyAppointments(Request $request)
