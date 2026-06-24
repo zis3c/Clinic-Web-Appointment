@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class ProfileController extends Controller
 {
@@ -18,10 +20,67 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $sessions = DB::table('sessions')
+            ->where('user_id', $request->user()->getAuthIdentifier())
+            ->orderBy('last_activity', 'desc')
+            ->get()
+            ->map(function ($session) use ($request) {
+                // Determine agent
+                $agent = $this->createAgent($session->user_agent);
+
+                return (object) [
+                    'agent' => $agent,
+                    'ip_address' => $session->ip_address,
+                    'is_current_device' => $session->id === $request->session()->getId(),
+                    'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                ];
+            });
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'sessions' => $sessions,
         ]);
+    }
+
+    /**
+     * Create a basic agent parsing array.
+     */
+    protected function createAgent($userAgent)
+    {
+        // Simple manual parsing since jenssegers/agent might not be installed
+        $browser = 'Unknown';
+        $platform = 'Unknown';
+
+        if (preg_match('/windows/i', $userAgent)) {
+            $platform = 'Windows';
+        } elseif (preg_match('/macintosh|mac os x/i', $userAgent)) {
+            $platform = 'macOS';
+        } elseif (preg_match('/linux/i', $userAgent)) {
+            $platform = 'Linux';
+        } elseif (preg_match('/iphone|ipad|ipod/i', $userAgent)) {
+            $platform = 'iOS';
+        } elseif (preg_match('/android/i', $userAgent)) {
+            $platform = 'Android';
+        }
+
+        if (preg_match('/edg/i', $userAgent)) {
+            $browser = 'Edge';
+        } elseif (preg_match('/chrome|crios/i', $userAgent)) {
+            $browser = 'Chrome';
+        } elseif (preg_match('/safari/i', $userAgent)) {
+            $browser = 'Safari';
+        } elseif (preg_match('/firefox|fxios/i', $userAgent)) {
+            $browser = 'Firefox';
+        } elseif (preg_match('/opera|opr/i', $userAgent)) {
+            $browser = 'Opera';
+        }
+
+        return [
+            'is_desktop' => in_array($platform, ['Windows', 'macOS', 'Linux']),
+            'platform' => $platform,
+            'browser' => $browser,
+        ];
     }
 
     /**
@@ -59,5 +118,29 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Log out from other browser sessions.
+     */
+    public function destroyOtherBrowserSessions(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        Auth::logoutOtherDevices($request->password);
+
+        $request->session()->put([
+            'password_hash_'.Auth::getDefaultDriver() => Auth::user()->getAuthPassword(),
+        ]);
+
+        // Delete from DB manually just to clean up immediately
+        DB::table('sessions')
+            ->where('user_id', $request->user()->getAuthIdentifier())
+            ->where('id', '!=', $request->session()->getId())
+            ->delete();
+
+        return Redirect::route('profile.edit');
     }
 }

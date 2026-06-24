@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import Toast from '@/Components/Toast';
+import Modal from '@/Components/Modal';
 
 export default function SidebarLayout({ user, header, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
+    const [showLogoutModal, setShowLogoutModal] = useState(false); // Logout confirmation
     
     // Desktop sidebar collapse state
     const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -114,11 +116,11 @@ export default function SidebarLayout({ user, header, children }) {
                 </nav>
 
                 {/* User Info & Settings */}
-                <div className="p-3 border-t border-gray-100 overflow-hidden">
+                <div className="p-3 border-t border-gray-100 overflow-hidden flex items-center justify-between">
                     <Link 
                         href={route('profile.edit')}
                         title={isCollapsed ? "Profile Settings" : undefined}
-                        className={`flex items-center rounded-xl transition-all duration-200 group hover:bg-gray-50 ${isCollapsed ? 'justify-center py-2 px-0' : 'gap-3 px-3 py-3'}`}
+                        className={`flex items-center flex-1 min-w-0 rounded-xl transition-all duration-200 group hover:bg-gray-50 ${isCollapsed ? 'justify-center py-2 px-0' : 'gap-3 px-3 py-2'}`}
                     >
                         <div className={`rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
                             {user.name.charAt(0)}
@@ -127,8 +129,19 @@ export default function SidebarLayout({ user, header, children }) {
                             <p className="text-sm font-bold text-gray-900 truncate group-hover:text-blue-700 transition-colors">{user.name}</p>
                             <p className="text-xs text-gray-500 truncate capitalize">{role}</p>
                         </div>
-                        <svg className={`w-5 h-5 flex-shrink-0 text-gray-400 group-hover:text-blue-600 transition-colors ${isCollapsed ? 'hidden' : 'block'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </Link>
+
+                    {!isCollapsed && (
+                        <button 
+                            onClick={() => setShowLogoutModal(true)}
+                            title="Log Out"
+                            className="flex-shrink-0 p-2 rounded-xl text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors focus:outline-none"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -158,7 +171,39 @@ export default function SidebarLayout({ user, header, children }) {
                 </main>
             </div>
             
+            
             <Toast />
+
+            {/* Logout Confirmation Modal */}
+            <Modal show={showLogoutModal} onClose={() => setShowLogoutModal(false)} maxWidth="sm">
+                <div className="p-8">
+                    <div className="flex items-center justify-center w-16 h-16 mx-auto bg-rose-50 rounded-2xl mb-6 shadow-inner">
+                        <svg className="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 text-center mb-3">Ready to leave?</h3>
+                    <p className="text-sm text-gray-500 text-center mb-8 leading-relaxed">
+                        Are you sure you want to log out of your account? You will need to enter your credentials to access the clinic portal again.
+                    </p>
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={() => setShowLogoutModal(false)}
+                            className="flex-1 px-4 py-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 font-bold rounded-xl transition-all shadow-sm"
+                        >
+                            Cancel
+                        </button>
+                        <Link 
+                            href={route('logout')}
+                            method="post"
+                            as="button"
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold rounded-xl transition-all text-center shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                        >
+                            Log Out
+                        </Link>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }

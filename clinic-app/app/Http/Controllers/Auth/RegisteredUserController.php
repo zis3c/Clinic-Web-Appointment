@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Patient;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,12 +36,34 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tel' => 'nullable|string|max:15',
+            'nic' => 'nullable|string|max:15',
+            'dob' => 'nullable|date',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:Male,Female,Other',
+            'blood_group' => 'nullable|string|max:5',
+            'allergies' => 'nullable|string',
+            'medical_conditions' => 'nullable|string',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'patient', // Explicitly set role just in case
+        ]);
+
+        // Create the associated patient profile
+        Patient::create([
+            'user_id' => $user->id,
+            'tel' => $request->tel,
+            'nic' => $request->nic,
+            'dob' => $request->dob,
+            'address' => $request->address,
+            'gender' => $request->gender,
+            'blood_group' => $request->blood_group,
+            'allergies' => $request->allergies,
+            'medical_conditions' => $request->medical_conditions,
         ]);
 
         event(new Registered($user));

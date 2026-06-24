@@ -99,6 +99,19 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Doctor deleted successfully.');
     }
 
+    public function bulkDestroyDoctors(Request $request)
+    {
+        $request->validate([
+            'doctor_ids' => 'required|array',
+            'doctor_ids.*' => 'exists:doctors,id',
+        ]);
+        
+        $userIds = Doctor::whereIn('id', $request->doctor_ids)->pluck('user_id');
+        User::whereIn('id', $userIds)->delete();
+        
+        return redirect()->back()->with('success', 'Selected doctors deleted successfully.');
+    }
+
     // --- PATIENTS ---
     public function patients()
     {
@@ -111,6 +124,19 @@ class AdminController extends Controller
     {
         $patient->user->delete();
         return redirect()->back()->with('success', 'Patient deleted successfully.');
+    }
+
+    public function bulkDestroyPatients(Request $request)
+    {
+        $request->validate([
+            'patient_ids' => 'required|array',
+            'patient_ids.*' => 'exists:patients,id',
+        ]);
+        
+        $userIds = Patient::whereIn('id', $request->patient_ids)->pluck('user_id');
+        User::whereIn('id', $userIds)->delete();
+        
+        return redirect()->back()->with('success', 'Selected patients deleted successfully.');
     }
 
     // --- SCHEDULES ---
@@ -152,6 +178,18 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Schedule deleted successfully.');
     }
 
+    public function bulkDestroySchedules(Request $request)
+    {
+        $request->validate([
+            'schedule_ids' => 'required|array',
+            'schedule_ids.*' => 'exists:schedules,id',
+        ]);
+        
+        Schedule::whereIn('id', $request->schedule_ids)->delete();
+        
+        return redirect()->back()->with('success', 'Selected schedules deleted successfully.');
+    }
+
     // --- APPOINTMENTS ---
     public function appointments()
     {
@@ -164,6 +202,18 @@ class AdminController extends Controller
     {
         $appointment->delete();
         return redirect()->back()->with('success', 'Appointment deleted successfully.');
+    }
+
+    public function bulkDestroyAppointments(Request $request)
+    {
+        $request->validate([
+            'appointment_ids' => 'required|array',
+            'appointment_ids.*' => 'exists:appointments,id',
+        ]);
+        
+        Appointment::whereIn('id', $request->appointment_ids)->delete();
+        
+        return redirect()->back()->with('success', 'Selected appointments deleted successfully.');
     }
 
     // --- REPORTS ---

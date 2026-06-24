@@ -14,10 +14,26 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+        @vite([
+            'resources/js/app.tsx',
+            file_exists(resource_path("js/Pages/{$page['component']}.tsx"))
+                ? "resources/js/Pages/{$page['component']}.tsx"
+                : "resources/js/Pages/{$page['component']}.jsx"
+        ])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js').then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
+        </script>
     </body>
 </html>

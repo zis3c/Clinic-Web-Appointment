@@ -88,5 +88,36 @@ class DatabaseSeeder extends Seeder
             'dob' => '2022-06-03',
             'tel' => '0700000000',
         ]);
+
+        // 5. Bulk Seed Doctors and Patients for UI/UX testing
+        Doctor::factory()->count(15)->create();
+        Patient::factory()->count(30)->create();
+
+        // 6. Make all patients have an appointment with doctor@edoc.com
+        $targetDoctor = Doctor::whereHas('user', function($q) {
+            $q->where('email', 'doctor@edoc.com');
+        })->first();
+
+        if ($targetDoctor) {
+            $patients = Patient::all();
+            
+            $schedule = \App\Models\Schedule::create([
+                'doctor_id' => $targetDoctor->id,
+                'title' => 'General Consultation Block',
+                'date' => date('Y-m-d', strtotime('+1 day')),
+                'time' => '09:00:00',
+                'number_of_patients' => $patients->count() + 10,
+            ]);
+
+            $apptNum = 1;
+            foreach ($patients as $patient) {
+                \App\Models\Appointment::create([
+                    'patient_id' => $patient->id,
+                    'schedule_id' => $schedule->id,
+                    'appointment_number' => $apptNum++,
+                    'date' => $schedule->date,
+                ]);
+            }
+        }
     }
 }

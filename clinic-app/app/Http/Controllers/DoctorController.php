@@ -61,7 +61,7 @@ class DoctorController extends Controller
     public function schedules()
     {
         $doctor = Auth::user()->doctor;
-        $schedules = $doctor ? $doctor->schedules()->with('appointments')->orderBy('date', 'desc')->get() : [];
+        $schedules = $doctor ? $doctor->schedules()->with('appointments.patient.user')->orderBy('date', 'desc')->get() : [];
 
         return Inertia::render('Doctor/Schedules', [
             'schedules' => $schedules,
@@ -129,6 +129,28 @@ class DoctorController extends Controller
 
         $appointment->delete();
         return redirect()->back()->with('success', 'Appointment cancelled successfully.');
+    }
+
+    public function bulkDestroyAppointments(Request $request)
+    {
+        $request->validate([
+            'appointment_ids' => 'required|array',
+            'appointment_ids.*' => 'exists:appointments,id'
+        ]);
+
+        $doctor = Auth::user()->doctor;
+
+        // Fetch appointments that actually belong to this doctor to prevent unauthorized deletion
+        $appointments = Appointment::whereIn('id', $request->appointment_ids)
+            ->whereHas('schedule', function ($query) use ($doctor) {
+                $query->where('doctor_id', $doctor->id);
+            })->get();
+
+        foreach ($appointments as $appointment) {
+            $appointment->delete();
+        }
+
+        return redirect()->back()->with('success', count($appointments) . ' selected appointments cancelled successfully.');
     }
 
     // --- PATIENTS ---
