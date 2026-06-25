@@ -57,7 +57,8 @@ html.lenis, html.lenis body {
 
 /* Custom modern scrollbar for internal containers */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track:vertical {
@@ -66,7 +67,7 @@ html.lenis, html.lenis body {
 }
 
 .custom-scrollbar:has(table)::-webkit-scrollbar-track:vertical {
-  margin-top: 49px; /* Matches exact height of thead (py-4 + text-xs = 48px + 1px border) to not overlap sticky header */
+  margin-top: 45px; /* Matches exact height of thead (py-3.5 + text-xs = 44px + 1px border) to not overlap sticky header */
 }
 
 .modal-scrollbar::-webkit-scrollbar-track:vertical {

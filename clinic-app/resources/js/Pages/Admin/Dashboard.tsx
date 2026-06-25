@@ -100,10 +100,10 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
         >
             <Head title="Admin Dashboard" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 h-[calc(100vh-140px)] lg:h-[calc(100vh-70px)] flex flex-col overflow-hidden">
                 
                 {/* Clinic Reception Check-in Center Action Banner */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-teal-500 via-blue-600 to-indigo-700 p-6 rounded-3xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="relative overflow-hidden bg-gradient-to-r from-teal-500 via-blue-600 to-indigo-700 p-4 rounded-3xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 flex-shrink-0">
                     {/* Background floating graphics */}
                     <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -114,8 +114,8 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-2xl font-black text-white tracking-tight">Clinic Reception Check-in</h3>
-                            <p className="text-sm text-blue-100 mt-1">Manage patient arrivals. Check in patients directly from the list below or lookup by Name, IC/NIC, or Code.</p>
+                            <h3 className="text-xl font-black text-white tracking-tight">Clinic Reception Check-in</h3>
+                            <p className="text-xs text-blue-100 mt-1">Manage patient arrivals. Check in patients directly from the list below or lookup by Name, IC/NIC, or Code.</p>
                         </div>
                     </div>
 
@@ -138,9 +138,9 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                 </div>
 
                 {/* KPI Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 flex-shrink-0">
                     {/* Total Doctors */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 group hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300">
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
@@ -154,7 +154,7 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                     </div>
 
                     {/* Total Patients */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-teal-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 group hover:shadow-xl hover:shadow-teal-500/5 hover:-translate-y-0.5 transition-all duration-300">
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-teal-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
@@ -168,7 +168,7 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                     </div>
 
                     {/* Total Appointments */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 group hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-0.5 transition-all duration-300">
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-purple-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
@@ -182,7 +182,7 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                     </div>
 
                     {/* Total Schedules */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 group hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-0.5 transition-all duration-300">
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-amber-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
@@ -197,9 +197,9 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                 </div>
 
                 {/* Dashboard layout: Recent appointments & Info */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
                     {/* Recent Bookings & Status Overview */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:col-span-2">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:col-span-2 h-full min-h-0">
                         <div className="px-6 py-3.5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
                             <div>
                                 <h3 className="font-bold text-gray-800 text-base">Recent Booking Submissions</h3>
@@ -210,18 +210,18 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                             </Link>
                         </div>
                         
-                        <div className="flex-1 overflow-y-auto custom-scrollbar max-h-[500px]">
-                            <div className="px-6 py-1 divide-y divide-gray-100">
-                                {appointments.length === 0 ? (
-                                    <div className="p-12 text-center">
-                                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100 text-gray-400">
-                                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                                        </div>
-                                        <h4 className="font-bold text-gray-800">No Recent Bookings</h4>
-                                        <p className="text-xs text-gray-400 mt-1">There are no patient appointment submissions logged in the system today.</p>
+                        <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0 flex flex-col">
+                            {appointments.length === 0 ? (
+                                <div className="flex-1 flex flex-col justify-center items-center p-6 text-center">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100 text-gray-400">
+                                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                                     </div>
-                                ) : (
-                                    appointments.map((apt: any) => (
+                                    <h4 className="font-bold text-gray-800">No Recent Bookings</h4>
+                                    <p className="text-xs text-gray-400 mt-1">There are no patient appointment submissions logged in the system today.</p>
+                                </div>
+                            ) : (
+                                <div className="px-6 py-1 divide-y divide-gray-100">
+                                    {appointments.map((apt: any) => (
                                         <div key={apt.id} className="py-3 first:pt-1.5 last:pb-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                             <div className="flex items-center space-x-3.5">
                                                 <div className="h-9 w-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-sm shadow-sm">
@@ -266,14 +266,14 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
                                                 )}
                                             </div>
                                         </div>
-                                    ))
-                                )}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     {/* System Announcement & Queue Status */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between h-full min-h-0">
                         <div className="flex-1 pr-1">
                             <h4 className="font-bold text-gray-800 mb-1.5 text-base">Check-in Guidelines</h4>
                             <p className="text-xs text-gray-500 leading-relaxed mb-3">
@@ -440,3 +440,4 @@ export default function Dashboard({ auth, doctorCount, patientCount, appointment
         </SidebarLayout>
     );
 }
+

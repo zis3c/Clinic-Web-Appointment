@@ -11,12 +11,45 @@ export default function Patients({ auth, patients }: any) {
     const [showBulkCancelModal, setShowBulkCancelModal] = useState(false);
     const [viewPatient, setViewPatient] = useState<any>(null);
     const [showPatientModal, setShowPatientModal] = useState(false);
+    const [patientToDelete, setPatientToDelete] = useState<number | null>(null);
+    const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
+
+    const handleSingleDelete = () => {
+        if (!patientToDelete) return;
+        const targetId = patientToDelete;
+        const patientName = patients.find((p: any) => p.id === targetId)?.user?.name || 'Patient';
+        
+        // Hide immediately
+        setPendingDeleteIds(prev => [...prev, targetId]);
+        setPatientToDelete(null);
+
+        // Dispatch undo toast event
+        const event = new CustomEvent('show-undo-toast', {
+            detail: {
+                message: `Patient "${patientName}" has been queued for deletion.`,
+                onConfirm: () => {
+                    router.delete(route('admin.patients.destroy', targetId), {
+                        onFinish: () => {
+                            setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                        },
+                        preserveScroll: true
+                    });
+                },
+                onUndo: () => {
+                    setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                }
+            }
+        });
+        window.dispatchEvent(event);
+    };
 
     const filteredPatients = patients.filter((patient: any) => 
-        patient.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.nic.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.tel.includes(searchQuery)
+        !pendingDeleteIds.includes(patient.id) && (
+            patient.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            patient.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            patient.nic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            patient.tel.includes(searchQuery)
+        )
     );
 
     const handleSelect = (id: number) => {
@@ -115,7 +148,7 @@ export default function Patients({ auth, patients }: any) {
                     {/* Patch to cover the scrollbar track gap in the header */}
                     <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
 
-                    <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
+                    <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                 <tr>
@@ -171,23 +204,20 @@ export default function Patients({ auth, patients }: any) {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {patient.dob}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <Link 
-                                                href={route('admin.patients.destroy', patient.id)} 
-                                                method="delete" 
-                                                as="button"
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                                            <button 
+                                                onClick={() => setPatientToDelete(patient.id)}
                                                 className="text-rose-600 hover:text-rose-900 font-semibold"
-                                                preserveScroll
                                             >
                                                 Remove
-                                            </Link>
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         {filteredPatients.length === 0 && (
-                            <div className="p-10 text-center text-gray-500">
+                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
                                 {searchQuery ? 'No patients found matching your search.' : 'No patients found.'}
                             </div>
                         )}
@@ -220,6 +250,35 @@ export default function Patients({ auth, patients }: any) {
                 </div>
             </Modal>
 
+            {/* Delete Confirmation Modal */}
+            <Modal show={patientToDelete !== null} onClose={() => setPatientToDelete(null)} maxWidth="sm">
+                <div className="p-8">
+                    <div className="flex items-center justify-center w-16 h-16 mx-auto bg-rose-50 rounded-2xl mb-6 shadow-inner">
+                        <svg className="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 text-center mb-3">Remove Patient?</h3>
+                    <p className="text-sm text-gray-500 text-center mb-8 leading-relaxed">
+                        Are you sure you want to remove this patient from the directory? This action cannot be undone and will delete all patient records.
+                    </p>
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={() => setPatientToDelete(null)}
+                            className="flex-1 px-4 py-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 font-bold rounded-xl transition-all shadow-sm"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={handleSingleDelete}
+                            className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold rounded-xl transition-all text-center shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                        >
+                            Yes, Remove
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
             <PatientDetailsModal 
                 show={showPatientModal} 
                 onClose={() => setShowPatientModal(false)} 
@@ -228,3 +287,4 @@ export default function Patients({ auth, patients }: any) {
         </SidebarLayout>
     );
 }
+

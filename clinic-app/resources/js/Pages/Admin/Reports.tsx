@@ -39,10 +39,10 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
         >
             <Head title="System Reports" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 print:max-w-none print:mx-0 print:px-8 print:space-y-0">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 print:max-w-none print:mx-0 print:px-8 print:space-y-0 h-[calc(100vh-140px)] lg:h-[calc(100vh-70px)] flex flex-col overflow-hidden">
                 
                 {/* ===== SCREEN ONLY: Header Bar ===== */}
-                <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:hidden">
+                <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100 print:hidden">
                     <div>
                         <h3 className="text-lg font-bold text-gray-800">Clinic Analytics & Reports</h3>
                         <p className="text-sm text-gray-500">Overview of system metrics and recent activity.</p>
@@ -57,9 +57,9 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                 </div>
 
                 {/* ===== SCREEN ONLY: KPI Cards ===== */}
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 print:hidden">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 print:hidden">
                     {/* Card 1: Doctors */}
-                    <div className="relative overflow-hidden bg-gradient-to-br from-blue-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-blue-600 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-blue-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-blue-600 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
                         <div className="min-w-0">
                             <p className="text-[10px] font-bold text-blue-500/80 uppercase tracking-widest truncate">Doctors</p>
                             <h3 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mt-1.5">{metrics.total_doctors}</h3>
@@ -73,7 +73,7 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                     </div>
 
                     {/* Card 2: Patients */}
-                    <div className="relative overflow-hidden bg-gradient-to-br from-teal-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-teal-600 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-teal-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-teal-600 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
                         <div className="min-w-0">
                             <p className="text-[10px] font-bold text-teal-600/80 uppercase tracking-widest truncate">Patients</p>
                             <h3 className="text-3xl font-black bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent mt-1.5">{metrics.total_patients}</h3>
@@ -87,7 +87,7 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                     </div>
 
                     {/* Card 3: Schedules */}
-                    <div className="relative overflow-hidden bg-gradient-to-br from-purple-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-purple-600 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-purple-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-purple-600 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
                         <div className="min-w-0">
                             <p className="text-[10px] font-bold text-purple-600/80 uppercase tracking-widest truncate">Schedules</p>
                             <h3 className="text-3xl font-black bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mt-1.5">{metrics.total_schedules}</h3>
@@ -101,7 +101,7 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                     </div>
 
                     {/* Card 4: Bookings (30d) */}
-                    <div className="relative overflow-hidden bg-gradient-to-br from-rose-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-rose-600 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-rose-500/5 via-white to-white rounded-2xl shadow-sm border-t border-r border-b border-gray-100 border-l-4 border-l-rose-600 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all group flex justify-between items-center">
                         <div className="min-w-0">
                             <p className="text-[10px] font-bold text-rose-500/80 uppercase tracking-widest truncate">Bookings (30d)</p>
                             <h3 className="text-3xl font-black bg-gradient-to-r from-rose-600 to-rose-800 bg-clip-text text-transparent mt-1.5">{appointments_last_30_days}</h3>
@@ -237,28 +237,27 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                 </div>
 
                 {/* ===== SCREEN ONLY: Tables ===== */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden flex-1 min-h-0">
                     {/* Most Active Doctors */}
-                    <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 flex flex-col">
+                    <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 flex flex-col h-full min-h-0">
                         <div className="p-6 border-b border-gray-100 flex-shrink-0">
                             <h3 className="text-lg font-bold text-gray-800">Most Active Doctors</h3>
                             <p className="text-sm text-gray-500">Top 5 doctors ranked by scheduled sessions.</p>
                         </div>
-                        <div className="overflow-x-hidden max-h-[250px] overflow-y-auto custom-scrollbar flex-1">
-                            <table className="min-w-full divide-y divide-gray-200">
+                        <div className="overflow-x-auto overflow-y-auto custom-scrollbar flex-1 min-h-0">
+                            <table className="min-w-full min-w-[500px] divide-y divide-gray-200">
                                 <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                     <tr>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider w-16">Rank</th>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Doctor</th>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Specialty</th>
-                                        <th className="px-4 py-3 text-right text-[10px] font-bold text-gray-500 uppercase tracking-wider">Sessions</th>
+                                        <th className="pl-8 pr-4 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-16">Rank</th>
+                                        <th className="px-4 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Doctor</th>
+                                        <th className="pl-6 pr-8 py-3.5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Sessions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {top_doctors.map((doctor: any, index: any) => (
                                         <tr key={doctor.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-4 py-2.5 whitespace-nowrap">
-                                                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-xs
+                                            <td className="pl-8 pr-4 py-4 whitespace-nowrap">
+                                                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[10px] flex-shrink-0
                                                     ${index === 0 ? 'bg-yellow-100 text-yellow-700' : 
                                                       index === 1 ? 'bg-gray-100 text-gray-600' : 
                                                       index === 2 ? 'bg-orange-100 text-orange-700' : 
@@ -267,20 +266,15 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                                                     {index + 1}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-2.5 whitespace-nowrap">
-                                                <div className="flex items-center">
+                                            <td className="px-4 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-3">
                                                     <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
                                                         {doctor.user.name.charAt(0)}
                                                     </div>
-                                                    <div className="ml-3">
-                                                        <div className="text-xs font-bold text-gray-900">{doctor.user.name}</div>
-                                                    </div>
+                                                    <div className="text-sm font-bold text-gray-900">{doctor.user.name}</div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-2.5 whitespace-nowrap text-xs text-gray-500">
-                                                {doctor.specialty.name}
-                                            </td>
-                                            <td className="px-4 py-2.5 whitespace-nowrap text-right">
+                                            <td className="pl-6 pr-8 py-4 whitespace-nowrap text-right">
                                                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700">
                                                     {doctor.schedules_count}
                                                 </span>
@@ -290,52 +284,59 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                                 </tbody>
                             </table>
                             {top_doctors.length === 0 && (
-                                <div className="p-10 text-center text-gray-500">No doctors found.</div>
+                                <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">No doctors found.</div>
                             )}
                         </div>
                     </div>
 
                     {/* Recent Appointments */}
-                    <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 flex flex-col">
+                    <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 flex flex-col h-full min-h-0">
                         <div className="p-6 border-b border-gray-100 flex-shrink-0">
                             <h3 className="text-lg font-bold text-gray-800">Recent Appointments</h3>
                             <p className="text-sm text-gray-500">Latest 10 bookings across the clinic.</p>
                         </div>
-                        <div className="overflow-x-hidden max-h-[250px] overflow-y-auto custom-scrollbar flex-1">
-                            <table className="min-w-full divide-y divide-gray-200">
+                        <div className="overflow-x-auto overflow-y-auto custom-scrollbar flex-1 min-h-0">
+                            <table className="min-w-full min-w-[500px] divide-y divide-gray-200">
                                 <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                     <tr>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Patient</th>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Doctor</th>
-                                        <th className="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                        <th className="pl-8 pr-4 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-16">Rank</th>
+                                        <th className="px-4 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Patient</th>
+                                        <th className="pl-6 pr-8 py-3.5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Session</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {recent_appointments.map((appointment: any) => (
+                                    {recent_appointments.map((appointment: any, index: any) => (
                                         <tr key={appointment.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-4 py-2.5 whitespace-nowrap">
+                                            <td className="pl-8 pr-4 py-4 whitespace-nowrap">
+                                                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[10px] flex-shrink-0
+                                                    ${index === 0 ? 'bg-yellow-100 text-yellow-700' : 
+                                                      index === 1 ? 'bg-gray-100 text-gray-600' : 
+                                                      index === 2 ? 'bg-orange-100 text-orange-700' : 
+                                                      'bg-gray-50 text-gray-400'}`}
+                                                >
+                                                    {index + 1}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
                                                         {appointment.patient.user.name.charAt(0)}
                                                     </div>
                                                     <div className="ml-3">
-                                                        <div className="text-xs font-bold text-gray-900">{appointment.patient.user.name}</div>
+                                                        <div className="text-sm font-bold text-gray-900">{appointment.patient.user.name}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-2.5 whitespace-nowrap">
-                                                <div className="text-xs font-bold text-gray-900">Dr. {appointment.schedule.doctor.user.name}</div>
-                                            </td>
-                                            <td className="px-4 py-2.5 whitespace-nowrap">
-                                                <div className="text-xs font-semibold text-gray-900">{new Date(appointment.schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-                                                <div className="text-[10px] text-gray-500 mt-0.5">{formatTime(appointment.schedule.time)}</div>
+                                            <td className="pl-6 pr-8 py-4 whitespace-nowrap text-right">
+                                                <div className="text-sm font-semibold text-gray-900">{new Date(appointment.schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                                                <div className="text-xs text-gray-500 mt-0.5">{formatTime(appointment.schedule.time)}</div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                             {recent_appointments.length === 0 && (
-                                <div className="p-10 text-center text-gray-500">No recent appointments found.</div>
+                                <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">No recent appointments found.</div>
                             )}
                         </div>
                     </div>

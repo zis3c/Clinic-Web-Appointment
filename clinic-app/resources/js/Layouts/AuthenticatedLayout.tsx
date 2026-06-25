@@ -174,3 +174,4 @@ export default function AuthenticatedLayout({ header, children }) {
         </div>
     );
 }
+

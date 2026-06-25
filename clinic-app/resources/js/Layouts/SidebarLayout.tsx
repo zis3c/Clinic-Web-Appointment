@@ -215,3 +215,4 @@ export default function SidebarLayout({ user, header, children }) {
         </div>
     );
 }
+

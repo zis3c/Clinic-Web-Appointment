@@ -93,47 +93,49 @@ export default function Doctors({ auth, doctors }: any) {
 
                     {/* Doctors Grid */}
                     {filteredDoctors.length > 0 ? (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredDoctors.map((doctor: any) => (
-                                <div key={doctor.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full">
-                                    <div 
-                                        onClick={() => setSelectedDoctorForModal(doctor)}
-                                        className="flex items-center space-x-4 mb-4 cursor-pointer group/avatar"
-                                    >
-                                        <div className="h-16 w-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-2xl font-bold shadow-inner group-hover/avatar:scale-105 transition-transform duration-200">
-                                            {doctor.user?.avatar ? (
-                                                <img 
-                                                    src={`/storage/${doctor.user.avatar}`} 
-                                                    alt={doctor.user.name} 
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            ) : (
-                                                doctor.user?.name.charAt(0)
-                                            )}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-gray-900 group-hover/avatar:text-blue-600 transition-colors">Dr. {doctor.user?.name}</h3>
-                                            <p className="text-sm text-blue-600 font-semibold">{doctor.specialty?.name}</p>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 text-sm text-gray-600 mb-6 flex-grow">
-                                        <p className="flex items-center"><span className="font-medium w-20">Email:</span> {doctor.user?.email}</p>
-                                        <p className="flex items-center"><span className="font-medium w-20">Tel:</span> {doctor.tel}</p>
-                                        <button 
+                        <div className="overflow-y-auto custom-scrollbar h-[calc(100vh-310px)] pr-2 pb-6">
+                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-1">
+                                {filteredDoctors.map((doctor: any) => (
+                                    <div key={doctor.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full">
+                                        <div 
                                             onClick={() => setSelectedDoctorForModal(doctor)}
-                                            className="text-xs text-blue-600 hover:text-blue-800 font-bold transition-colors mt-2 block"
+                                            className="flex items-center space-x-4 mb-4 cursor-pointer group/avatar"
                                         >
-                                            View Professional Profile Details →
-                                        </button>
+                                            <div className="h-16 w-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-2xl font-bold shadow-inner group-hover/avatar:scale-105 transition-transform duration-200">
+                                                {doctor.user?.avatar ? (
+                                                    <img 
+                                                        src={`/storage/${doctor.user.avatar}`} 
+                                                        alt={doctor.user.name} 
+                                                        className="h-full w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    doctor.user?.name.charAt(0)
+                                                )}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-xl font-bold text-gray-900 group-hover/avatar:text-blue-600 transition-colors">Dr. {doctor.user?.name}</h3>
+                                                <p className="text-sm text-blue-600 font-semibold">{doctor.specialty?.name}</p>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2 text-sm text-gray-600 mb-6 flex-grow">
+                                            <p className="flex items-center"><span className="font-medium w-20">Email:</span> {doctor.user?.email}</p>
+                                            <p className="flex items-center"><span className="font-medium w-20">Tel:</span> {doctor.tel}</p>
+                                            <button 
+                                                onClick={() => setSelectedDoctorForModal(doctor)}
+                                                className="text-xs text-blue-600 hover:text-blue-800 font-bold transition-colors mt-2 block"
+                                            >
+                                                View Professional Profile Details →
+                                            </button>
+                                        </div>
+                                        <Link href={route('patient.schedules.index')} className="block text-center w-full py-2 px-4 bg-gray-50 hover:bg-blue-50 text-blue-700 font-semibold rounded-xl border border-blue-100 transition-colors mt-auto">
+                                            View Schedules & Book
+                                        </Link>
                                     </div>
-                                    <Link href={route('patient.schedules.index')} className="block text-center w-full py-2 px-4 bg-gray-50 hover:bg-blue-50 text-blue-700 font-semibold rounded-xl border border-blue-100 transition-colors mt-auto">
-                                        View Schedules & Book
-                                    </Link>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm">
+                        <div className="bg-white rounded-2xl h-[calc(100vh-310px)] flex flex-col justify-center items-center text-center border border-gray-100 shadow-sm p-12">
                             <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>

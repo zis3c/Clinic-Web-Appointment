@@ -13,16 +13,19 @@ export default function Appointments({ auth, appointments }: any) {
     const [viewPatient, setViewPatient] = useState<any>(null);
     const [showPatientModal, setShowPatientModal] = useState(false);
     const [expandedSessions, setExpandedSessions] = useState<number[]>([]);
+    const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
 
     // Group appointments by schedule_id
     const groupedSessions = useMemo(() => {
         const groups: Record<number, { schedule: any; appointments: any[] }> = {};
         
         const filtered = appointments.filter((appointment: any) => 
-            appointment.appointment_number.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
-            appointment.patient.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            appointment.schedule.doctor.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            appointment.date.includes(searchQuery)
+            !pendingDeleteIds.includes(appointment.id) && (
+                appointment.appointment_number.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+                appointment.patient.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                appointment.schedule.doctor.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                appointment.date.includes(searchQuery)
+            )
         );
 
         filtered.forEach((apt: any) => {
@@ -62,6 +65,36 @@ export default function Appointments({ auth, appointments }: any) {
         } else {
             setSelectedIds(prev => [...new Set([...prev, ...appointmentIds])]);
         }
+    };
+
+    const handleConfirmCancel = () => {
+        if (!appointmentToCancel) return;
+        const targetId = appointmentToCancel;
+        const apt = appointments.find((a: any) => a.id === targetId);
+        const patientName = apt?.patient?.user?.name || 'Patient';
+        
+        // Hide immediately
+        setPendingDeleteIds(prev => [...prev, targetId]);
+        setAppointmentToCancel(null);
+
+        // Dispatch undo toast event
+        const event = new CustomEvent('show-undo-toast', {
+            detail: {
+                message: `Appointment for "${patientName}" has been cancelled.`,
+                onConfirm: () => {
+                    router.delete(route('admin.appointments.destroy', targetId), {
+                        onFinish: () => {
+                            setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                        },
+                        preserveScroll: true
+                    });
+                },
+                onUndo: () => {
+                    setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                }
+            }
+        });
+        window.dispatchEvent(event);
     };
 
     const handleBulkCancel = () => {
@@ -173,7 +206,7 @@ export default function Appointments({ auth, appointments }: any) {
                     {/* Patch to cover the scrollbar track gap in the header */}
                     <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
 
-                    <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
+                    <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
                          <table className="min-w-full divide-y divide-gray-200 table-fixed">
                             <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                 <tr>
@@ -480,7 +513,7 @@ export default function Appointments({ auth, appointments }: any) {
                             </tbody>
                         </table>
                         {groupedSessions.length === 0 && (
-                            <div className="p-10 text-center text-gray-500">
+                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
                                 {searchQuery ? 'No appointments found matching your search.' : 'No appointments found.'}
                             </div>
                         )}
@@ -508,16 +541,12 @@ export default function Appointments({ auth, appointments }: any) {
                         >
                             Keep It
                         </button>
-                        <Link 
-                            href={appointmentToCancel ? route('admin.appointments.destroy', appointmentToCancel) : '#'}
-                            method="delete"
-                            as="button"
-                            onClick={() => setAppointmentToCancel(null)}
-                            preserveScroll
+                        <button 
+                            onClick={handleConfirmCancel}
                             className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold rounded-xl transition-all text-center shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
                             Yes, Cancel
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </Modal>

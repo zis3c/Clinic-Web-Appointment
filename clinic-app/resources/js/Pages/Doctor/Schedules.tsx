@@ -12,6 +12,7 @@ export default function Schedules({ auth, schedules }: any) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
@@ -50,20 +51,39 @@ export default function Schedules({ auth, schedules }: any) {
 
     const confirmDelete = () => {
         if (!sessionToDelete) return;
-        setIsDeleting(true);
-        router.delete(route('doctor.schedules.destroy', sessionToDelete.id), {
-            preserveScroll: true,
-            onFinish: () => {
-                setIsDeleting(false);
-                setIsCancelModalOpen(false);
+        const targetId = sessionToDelete.id;
+        const sessionTitle = sessionToDelete.title;
+        
+        // Close modal and hide session immediately
+        setIsCancelModalOpen(false);
+        setPendingDeleteIds(prev => [...prev, targetId]);
+
+        // Dispatch undo toast event
+        const event = new CustomEvent('show-undo-toast', {
+            detail: {
+                message: `Session "${sessionTitle}" has been cancelled.`,
+                onConfirm: () => {
+                    router.delete(route('doctor.schedules.destroy', targetId), {
+                        onFinish: () => {
+                            setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                        },
+                        preserveScroll: true
+                    });
+                },
+                onUndo: () => {
+                    setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                }
             }
         });
+        window.dispatchEvent(event);
     };
 
     const filteredSchedules = schedules.filter((schedule: any) => 
-        schedule.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        schedule.date.includes(searchQuery) ||
-        schedule.time.includes(searchQuery)
+        !pendingDeleteIds.includes(schedule.id) && (
+            schedule.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            schedule.date.includes(searchQuery) ||
+            schedule.time.includes(searchQuery)
+        )
     );
 
     return (
@@ -108,7 +128,7 @@ export default function Schedules({ auth, schedules }: any) {
                     {/* Patch to cover the scrollbar track gap in the header */}
                     <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
 
-                    <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
+                    <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                 <tr>
@@ -169,7 +189,7 @@ export default function Schedules({ auth, schedules }: any) {
                             </tbody>
                         </table>
                         {filteredSchedules.length === 0 && (
-                            <div className="p-10 text-center text-gray-500">
+                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
                                 {searchQuery ? "No scheduled sessions found matching your search." : "You have no scheduled sessions. Please contact an Admin to schedule your availability."}
                             </div>
                         )}

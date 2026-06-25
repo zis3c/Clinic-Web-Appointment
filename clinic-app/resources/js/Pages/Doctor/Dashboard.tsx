@@ -17,10 +17,10 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
         >
             <Head title="Doctor Dashboard" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 h-[calc(100vh-140px)] lg:h-[calc(100vh-70px)] flex flex-col overflow-hidden">
                 
                 {/* Welcome Banner */}
-                <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 flex-shrink-0">
                     <div className="flex items-center gap-4">
                         {/* Notification Bell with Badge */}
                         <div className="relative p-3 bg-blue-50 rounded-2xl text-blue-600 flex-shrink-0">
@@ -52,7 +52,7 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                 </div>
 
                 {/* KPI Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-shrink-0">
                     {/* Total Bookings */}
                     <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-0.5 transition-all duration-300">
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
@@ -97,11 +97,11 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                 </div>
 
                 {/* Split layout: Active Waiting Room Queue & schedules */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
                     
                     {/* Active Waiting Room Queue */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:col-span-2">
-                        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-teal-50 to-white">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:col-span-2 h-full min-h-0">
+                        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-teal-50 to-white flex-shrink-0">
                             <div>
                                 <h3 className="font-bold text-gray-800 flex items-center gap-2">
                                     <span className="relative flex h-2 w-2">
@@ -117,7 +117,7 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                             </span>
                         </div>
 
-                        <div className="divide-y divide-gray-100 flex-1 overflow-y-auto max-h-[500px]">
+                        <div className="divide-y divide-gray-100 flex-1 overflow-y-auto custom-scrollbar min-h-0 flex flex-col">
                             {waiting_room.map((apt: any, index: number) => {
                                 const arrivalTime = apt.checked_in_at ? new Date(apt.checked_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                                 return (
@@ -152,7 +152,7 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                                 );
                             })}
                             {waiting_room.length === 0 && (
-                                <div className="p-12 text-center">
+                                <div className="flex-1 flex flex-col justify-center items-center p-12 text-center">
                                     <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
                                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                                     </div>
@@ -164,8 +164,8 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                     </div>
 
                     {/* Upcoming Schedules */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-                        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full min-h-0">
+                        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
                             <div>
                                 <h3 className="font-bold text-gray-800">Your Sessions</h3>
                                 <p className="text-xs text-gray-500">Upcoming schedule list</p>
@@ -175,18 +175,18 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                             </span>
                         </div>
                         
-                        <div className="divide-y divide-gray-100 flex-1 overflow-y-auto max-h-[500px]">
+                        <div className="divide-y divide-gray-100 flex-1 overflow-y-auto custom-scrollbar min-h-0 flex flex-col">
                             {upcomingSchedules.map((schedule: any) => (
                                 <div key={schedule.id} className="p-4 flex flex-col justify-between hover:bg-blue-50/20 transition-all duration-200 gap-3">
                                     <div>
                                         <h5 className="font-bold text-sm text-gray-900 leading-tight">{schedule.title}</h5>
                                         <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-gray-400 font-medium">
                                             <span className="flex items-center gap-1">
-                                                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                 {new Date(schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                                             </span>
                                             <span className="flex items-center gap-1">
-                                                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                                 {formatTime12Hour(schedule.time)}
                                             </span>
                                         </div>
@@ -205,8 +205,8 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                                 </div>
                             ))}
                             {upcomingSchedules.length === 0 && (
-                                <div className="p-12 text-center">
-                                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <div className="flex-1 flex flex-col justify-center items-center p-12 text-center">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100 text-gray-400">
                                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     </div>
                                     <h4 className="font-bold text-gray-800">No Upcoming Schedules</h4>

@@ -89,7 +89,7 @@ export default function Schedules({ auth, schedules }: any) {
                     {/* Patch to cover the scrollbar track gap in the header */}
                     <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
 
-                    <div className="overflow-x-auto max-h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar">
+                    <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
                                 <tr>
@@ -160,8 +160,8 @@ export default function Schedules({ auth, schedules }: any) {
                         </table>
                         
                         {filteredSchedules.length === 0 && (
-                            <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
-                                <p className="text-gray-500 text-lg">No available sessions found matching your filters.</p>
+                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
+                                No available sessions found matching your filters.
                             </div>
                         )}
                     </div>

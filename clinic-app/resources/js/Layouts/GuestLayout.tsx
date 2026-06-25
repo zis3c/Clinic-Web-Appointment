@@ -35,3 +35,4 @@ export default function GuestLayout({ children, title, description }) {
         </div>
     );
 }
+

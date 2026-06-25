@@ -178,7 +178,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
 
                     <div className="p-6">
                         {(!appointments || appointments.length === 0) ? (
-                            <div className="text-center py-12">
+                            <div className="text-center h-[calc(100vh-390px)] flex flex-col justify-center items-center">
                                 <div className="mx-auto h-16 w-16 text-gray-300 mb-4">
                                     <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -188,7 +188,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                 <p className="text-xs text-gray-400 mt-1">Book your first appointment to get started.</p>
                             </div>
                         ) : (
-                            <div className="space-y-4">
+                            <div className="space-y-4 h-[calc(100vh-390px)] overflow-y-auto custom-scrollbar pr-2 pb-2">
                                 {appointments.map((apt: any) => {
                                     const isPast = new Date(apt.date + 'T' + (apt.schedule?.time || '00:00:00')).getTime() < new Date().getTime() || apt.status === 'completed';
                                     return (
