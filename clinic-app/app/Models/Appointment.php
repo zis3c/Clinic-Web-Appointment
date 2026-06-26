@@ -9,7 +9,7 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['patient_id', 'schedule_id', 'appointment_number', 'date', 'status', 'checked_in', 'checked_in_at'];
+    protected $fillable = ['patient_id', 'schedule_id', 'appointment_number', 'date', 'status', 'checked_in', 'checked_in_at', 'time_slot', 'diagnosis', 'prescriptions', 'notes'];
 
     protected $casts = [
         'date' => 'date',

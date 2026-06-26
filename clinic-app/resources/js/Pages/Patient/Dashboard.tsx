@@ -4,10 +4,12 @@ import { Head, Link } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
 import DoctorDetailsModal from '@/Components/DoctorDetailsModal';
 import AppointmentDetailsModal from '@/Components/AppointmentDetailsModal';
+import Modal from '@/Components/Modal';
 
 export default function Dashboard({ auth, appointments = [] }: any) {
     const [selectedDoctorForModal, setSelectedDoctorForModal] = useState<any>(null);
     const [selectedAptForDetails, setSelectedAptForDetails] = useState<any>(null);
+    const [selectedAptForEHR, setSelectedAptForEHR] = useState<any>(null);
 
     const getLocalDateString = (d: Date) => {
         const year = d.getFullYear();
@@ -25,6 +27,11 @@ export default function Dashboard({ auth, appointments = [] }: any) {
     // Calculate metrics
     const upcomingAppointments = (appointments || []).filter((apt: any) => {
         return apt.date >= todayStr && apt.status !== 'rejected' && apt.status !== 'completed';
+    });
+
+    // Find active waiting room queue appointment today
+    const activeQueueAppointment = (appointments || []).find((apt: any) => {
+        return apt.date === todayStr && apt.checked_in && apt.status === 'confirmed' && apt.queue_info !== null;
     });
 
     // Sort upcoming appointments ascending (earliest first)
@@ -85,7 +92,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
         >
             <Head title="Patient Dashboard" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6 pb-8 space-y-6">
                 
                 {/* Welcome Banner */}
                 <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -118,6 +125,48 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                         Book New Appointment
                     </Link>
                 </div>
+
+                {/* Live Queue Ticket */}
+                {activeQueueAppointment && (
+                    <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                        {/* Background subtle graphics */}
+                        <div className="absolute right-0 bottom-0 opacity-10 translate-x-12 translate-y-12">
+                            <svg className="w-80 h-80" fill="currentColor" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" />
+                            </svg>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span className="text-xs font-black tracking-widest text-blue-200 uppercase">Live Queue Board</span>
+                                </div>
+                                <h3 className="text-2xl font-black tracking-tight">You are checked in & waiting</h3>
+                                <p className="text-sm text-blue-100 max-w-md">
+                                    Your consultation with <span className="font-bold text-white">Dr. {activeQueueAppointment.schedule?.doctor?.user?.name}</span> is active in the lobby queue.
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-6 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10 w-full md:w-auto justify-around">
+                                <div className="text-center">
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-blue-200">Your Position</p>
+                                    <p className="text-3xl font-black text-white mt-1">#{activeQueueAppointment.queue_info?.position}</p>
+                                </div>
+                                <div className="h-10 w-px bg-white/20"></div>
+                                <div className="text-center">
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-blue-200">Patients Ahead</p>
+                                    <p className="text-3xl font-black text-white mt-1">{activeQueueAppointment.queue_info?.patients_ahead}</p>
+                                </div>
+                                <div className="h-10 w-px bg-white/20"></div>
+                                <div className="text-center">
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-blue-200">Est. Wait</p>
+                                    <p className="text-2xl font-black text-white mt-1">~{activeQueueAppointment.queue_info?.estimated_wait_minutes}m</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* KPI Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -190,12 +239,11 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                         ) : (
                             <div className="space-y-4 h-[calc(100vh-390px)] overflow-y-auto custom-scrollbar pr-2 pb-2">
                                 {appointments.map((apt: any) => {
-                                    const isPast = new Date(apt.date + 'T' + (apt.schedule?.time || '00:00:00')).getTime() < new Date().getTime() || apt.status === 'completed';
                                     return (
                                         <div 
                                             key={apt.id} 
                                             onClick={() => setSelectedAptForDetails(apt)}
-                                            className="flex items-center justify-between p-5 border border-gray-100 rounded-2xl hover:bg-slate-50/50 hover:border-blue-200 hover:shadow-md cursor-pointer group/card transition-all duration-200"
+                                            className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-2xl hover:bg-slate-50/50 hover:border-blue-200 hover:shadow-md cursor-pointer group/card transition-all duration-200 gap-4"
                                             title="Click to view appointment status details"
                                         >
                                             <div className="flex items-center space-x-4">
@@ -217,10 +265,26 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                                     <p className="text-xs text-gray-500 font-medium mt-0.5">
                                                         {new Date(apt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {formatTime12Hour(apt.schedule?.time)}
                                                     </p>
+                                                    {apt.time_slot && (
+                                                        <span className="inline-flex items-center mt-1 px-2 py-0.5 bg-blue-50 text-[10px] text-blue-600 font-bold rounded border border-blue-100">
+                                                            Slot: {apt.time_slot}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end space-y-1.5 flex-shrink-0">
+                                            <div className="flex sm:flex-col items-start sm:items-end justify-between sm:justify-start gap-1.5 flex-shrink-0">
                                                 <div className="flex items-center gap-1.5">
+                                                    {apt.status === 'completed' && (
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedAptForEHR(apt);
+                                                            }}
+                                                            className="inline-flex items-center px-2.5 py-1 rounded text-xs font-black bg-teal-600 hover:bg-teal-700 text-white border border-teal-700 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                                                        >
+                                                            View Rx/Notes
+                                                        </button>
+                                                    )}
                                                     {!!apt.checked_in && (
                                                         <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-black bg-teal-50 text-teal-700 border border-teal-200/50">
                                                             Arrived
@@ -259,6 +323,93 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                 onClose={() => setSelectedAptForDetails(null)}
                 appointment={selectedAptForDetails}
             />
+
+            {/* EHR Details Modal */}
+            {selectedAptForEHR && (
+                <Modal
+                    show={selectedAptForEHR !== null}
+                    onClose={() => setSelectedAptForEHR(null)}
+                    maxWidth="md"
+                >
+                    <div className="p-8 relative">
+                        <button 
+                            onClick={() => setSelectedAptForEHR(null)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors bg-gray-100 rounded-full p-1 focus:outline-none"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+
+                        <div className="text-center mb-6">
+                            <div className="h-14 w-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900">Consultation EHR Record</h3>
+                            <p className="text-xs text-gray-500 mt-1">JanjiCare Completed Consultation Note</p>
+                        </div>
+
+                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6 space-y-4">
+                            <div className="flex flex-col sm:flex-row justify-between text-sm pb-3 border-b border-slate-200/60 gap-2">
+                                <div>
+                                    <p className="text-xs text-slate-400 font-bold">DOCTOR</p>
+                                    <p className="font-extrabold text-slate-800 mt-0.5">Dr. {selectedAptForEHR.schedule?.doctor?.user?.name}</p>
+                                    <p className="text-xs text-blue-600 font-bold">{selectedAptForEHR.schedule?.doctor?.specialty?.name}</p>
+                                </div>
+                                <div className="sm:text-right">
+                                    <p className="text-xs text-slate-400 font-bold">DATE & TIME</p>
+                                    <p className="font-extrabold text-slate-800 mt-0.5">
+                                        {new Date(selectedAptForEHR.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                    </p>
+                                    <p className="text-xs text-slate-500 font-semibold">{formatTime12Hour(selectedAptForEHR.schedule?.time)}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Diagnosis</h4>
+                                <p className="text-sm font-extrabold text-slate-900 bg-teal-50/50 border border-teal-100/50 p-3 rounded-xl mt-1.5 leading-relaxed">
+                                    {selectedAptForEHR.diagnosis || 'No diagnosis recorded.'}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Prescriptions</h4>
+                                <p className="text-sm font-semibold text-slate-800 bg-blue-50/30 border border-blue-100/30 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed font-mono">
+                                    {selectedAptForEHR.prescriptions || 'No prescription written.'}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clinical Notes</h4>
+                                <p className="text-sm text-slate-700 bg-white border border-slate-100 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed">
+                                    {selectedAptForEHR.notes || 'No doctor notes.'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Stamp and signature simulation */}
+                        <div className="flex justify-between items-center px-4">
+                            <div className="text-[9px] text-slate-400 font-bold">
+                                JanjiCare Electronic Health Record<br/>
+                                System ID: #{selectedAptForEHR.id}
+                            </div>
+                            <div className="text-right flex flex-col items-center">
+                                <div className="font-serif text-teal-600/85 text-xl font-bold italic rotate-[-4deg] border-2 border-teal-500/20 px-3 py-1 rounded bg-teal-50/20">
+                                    Dr. {selectedAptForEHR.schedule?.doctor?.user?.name?.split(' ')[0]}
+                                </div>
+                                <div className="text-[8px] text-slate-400 uppercase font-black tracking-wider mt-1">Digitally Signed</div>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={() => setSelectedAptForEHR(null)}
+                            className="mt-6 w-full py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-lg rounded-xl shadow-md transition-all text-center focus:outline-none"
+                        >
+                            Close Record
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </SidebarLayout>
     );
 }

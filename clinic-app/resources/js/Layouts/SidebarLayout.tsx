@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import Toast from '@/Components/Toast';
 import Modal from '@/Components/Modal';
 
-export default function SidebarLayout({ user, header, children }) {
+export default function SidebarLayout({ user, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
     const [showLogoutModal, setShowLogoutModal] = useState(false); // Logout confirmation
     
@@ -36,7 +36,6 @@ export default function SidebarLayout({ user, header, children }) {
             { name: 'Dashboard', href: route('doctor.dashboard'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
             { name: 'My Appointments', href: route('doctor.appointments.index'), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
             { name: 'My Schedule', href: route('doctor.schedules.index'), icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
-            { name: 'My Patients', href: route('doctor.patients.index'), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
         ],
         patient: [
             { name: 'Dashboard', href: route('patient.dashboard'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -153,31 +152,23 @@ export default function SidebarLayout({ user, header, children }) {
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
-                {/* Mobile Header */}
-                <header className="lg:hidden flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 shadow-sm z-30 flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-sm flex-shrink-0">
-                            +
-                        </div>
-                    </div>
-                    <button 
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
+                    <button
                         onClick={() => setSidebarOpen(true)}
-                        className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-xl bg-white/90 backdrop-blur border border-gray-100 text-gray-500 hover:text-gray-900 hover:bg-white shadow-sm focus:outline-none"
+                        aria-label="Open navigation"
                     >
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                </header>
 
-
-                {/* Page Content */}
-                <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 z-10 w-full">
-                    {children}
-                </main>
-            </div>
+                    {/* Page Content */}
+                    <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 z-10 w-full">
+                        {children}
+                    </main>
+                </div>
             
             
             <Toast />

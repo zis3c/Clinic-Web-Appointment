@@ -4,13 +4,7 @@ import React from 'react';
 
 export default function Dashboard(): React.JSX.Element {
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
 
             <div className="py-12">

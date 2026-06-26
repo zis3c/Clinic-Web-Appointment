@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SidebarLayout from '@/Layouts/SidebarLayout';
 import Modal from '@/Components/Modal';
 import PatientDetailsModal from '@/Components/PatientDetailsModal';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
 import CustomSelect from '@/Components/CustomSelect';
 
@@ -16,6 +16,25 @@ export default function Appointments({ auth, appointments }: any) {
     const [viewPatient, setViewPatient] = useState<any>(null);
     const [showPatientModal, setShowPatientModal] = useState(false);
     const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
+    const [selectedAptForComplete, setSelectedAptForComplete] = useState<any>(null);
+
+    const { data, setData, patch, processing, errors, reset, clearErrors } = useForm({
+        diagnosis: '',
+        prescriptions: '',
+        notes: '',
+    });
+
+    const submitCompleteConsultation = (e: any) => {
+        e.preventDefault();
+        patch(route('doctor.appointments.complete', selectedAptForComplete.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSelectedAptForComplete(null);
+                reset();
+                clearErrors();
+            }
+        });
+    };
 
     const isDateInRange = (dateStr: string, filter: string) => {
         if (filter === 'all') return true;
@@ -291,18 +310,17 @@ export default function Appointments({ auth, appointments }: any) {
                                                             </svg>
                                                         </button>
                                                         {!!appointment.checked_in && appointment.status === 'confirmed' && (
-                                                            <Link
-                                                                href={route('doctor.appointments.complete', appointment.id)}
-                                                                method="patch"
-                                                                as="button"
-                                                                preserveScroll
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSelectedAptForComplete(appointment);
+                                                                }}
                                                                 title="Complete Consultation"
                                                                 className="text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                                                             >
                                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                                                                 </svg>
-                                                            </Link>
+                                                            </button>
                                                         )}
                                                         {appointment.status !== 'rejected' && appointment.status !== 'completed' && (
                                                             <button 
@@ -394,6 +412,112 @@ export default function Appointments({ auth, appointments }: any) {
                 onClose={() => setShowPatientModal(false)} 
                 patient={viewPatient} 
             />
+
+            {/* Complete Consultation (EHR Form) Modal */}
+            {selectedAptForComplete && (
+                <Modal
+                    show={selectedAptForComplete !== null}
+                    onClose={() => {
+                        setSelectedAptForComplete(null);
+                        reset();
+                        clearErrors();
+                    }}
+                    maxWidth="md"
+                >
+                    <form onSubmit={submitCompleteConsultation} className="p-8 relative">
+                        <button 
+                            type="button"
+                            onClick={() => {
+                                setSelectedAptForComplete(null);
+                                reset();
+                                clearErrors();
+                            }}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors bg-gray-100 rounded-full p-1 focus:outline-none"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+
+                        <div className="text-center mb-6">
+                            <div className="h-14 w-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900">Complete Consultation</h3>
+                            <p className="text-xs text-gray-500 mt-1">Please enter the EHR notes for {selectedAptForComplete.patient.user.name}</p>
+                        </div>
+
+                        <div className="space-y-4">
+                            {/* Diagnosis */}
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Diagnosis</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={data.diagnosis}
+                                    onChange={(e) => setData('diagnosis', e.target.value)}
+                                    placeholder="e.g. Acute Pharyngitis, Essential Hypertension"
+                                    className="w-full border-gray-200 rounded-xl text-xs focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 transition-all outline-none"
+                                />
+                                {errors.diagnosis && (
+                                    <p className="text-rose-500 text-[10px] mt-1 font-bold">{errors.diagnosis}</p>
+                                )}
+                            </div>
+
+                            {/* Prescriptions */}
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Prescriptions</label>
+                                <textarea
+                                    value={data.prescriptions}
+                                    onChange={(e) => setData('prescriptions', e.target.value)}
+                                    placeholder="e.g. Paracetamol 500mg TDS x 5 days&#10;Amoxicillin 500mg BD x 7 days"
+                                    rows={3}
+                                    className="w-full border-gray-200 rounded-xl text-xs focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 transition-all outline-none font-mono"
+                                />
+                                {errors.prescriptions && (
+                                    <p className="text-rose-500 text-[10px] mt-1 font-bold">{errors.prescriptions}</p>
+                                )}
+                            </div>
+
+                            {/* Notes */}
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Doctor Notes / Instructions</label>
+                                <textarea
+                                    value={data.notes}
+                                    onChange={(e) => setData('notes', e.target.value)}
+                                    placeholder="e.g. Drink plenty of water, rest for 3 days, follow up if symptoms persist."
+                                    rows={3}
+                                    className="w-full border-gray-200 rounded-xl text-xs focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 transition-all outline-none"
+                                />
+                                {errors.notes && (
+                                    <p className="text-rose-500 text-[10px] mt-1 font-bold">{errors.notes}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSelectedAptForComplete(null);
+                                    reset();
+                                    clearErrors();
+                                }}
+                                className="flex-1 py-3 px-4 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors focus:outline-none"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="flex-1 py-3 px-4 text-xs font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-lg rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all transform enabled:hover:scale-[1.02] focus:outline-none"
+                            >
+                                Complete Consultation
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
         </SidebarLayout>
     );
 }

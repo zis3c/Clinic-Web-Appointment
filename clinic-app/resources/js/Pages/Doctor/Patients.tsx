@@ -18,9 +18,8 @@ export default function Patients({ auth, patients }: any) {
     return (
         <SidebarLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">My Patients</h2>}
         >
-            <Head title="My Patients" />
+            <Head title="Patients" />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 

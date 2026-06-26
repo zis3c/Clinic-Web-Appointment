@@ -33,6 +33,18 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user() ? $request->user()->load('patient', 'doctor') : null,
+                'notifications' => $request->user()
+                    ? $request->user()->unreadNotifications()->take(10)->get()->map(function($n) {
+                        return [
+                            'id' => $n->id,
+                            'title' => $n->data['title'] ?? '',
+                            'message' => $n->data['message'] ?? '',
+                            'type' => $n->data['type'] ?? 'info',
+                            'created_at' => $n->created_at->diffForHumans(),
+                        ];
+                    })
+                    : [],
+                'unread_notifications_count' => $request->user() ? $request->user()->unreadNotifications()->count() : 0,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

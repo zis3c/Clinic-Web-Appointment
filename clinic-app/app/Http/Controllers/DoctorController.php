@@ -86,6 +86,7 @@ class DoctorController extends Controller
             'date' => 'required|date',
             'time' => 'required',
             'number_of_patients' => 'required|integer|min:1',
+            'slot_duration' => 'nullable|integer|min:5|max:180',
         ]);
 
         $doctor = Auth::user()->doctor;
@@ -100,6 +101,7 @@ class DoctorController extends Controller
             'date' => $request->date,
             'time' => $request->time,
             'number_of_patients' => $request->number_of_patients,
+            'slot_duration' => $request->slot_duration ?? 30,
         ]);
 
         return redirect()->back()->with('success', 'Schedule session created successfully.');
@@ -146,18 +148,36 @@ class DoctorController extends Controller
             abort(403);
         }
 
-        $appointment->update([
-            'status' => 'completed',
+        $request->validate([
+            'diagnosis' => 'nullable|string',
+            'prescriptions' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
 
-        // Send completed status update email
+        $appointment->update([
+            'status' => 'completed',
+            'diagnosis' => $request->diagnosis,
+            'prescriptions' => $request->prescriptions,
+            'notes' => $request->notes,
+        ]);
+
+        // Send completed status update email and DB notification
         try {
             $appointment->load(['patient.user', 'schedule.doctor.user']);
+            
+            // Database Notification
+            $doctorName = Auth::user()->name;
+            $appointment->patient->user->notify(new \App\Notifications\ClinicNotification(
+                'Consultation Completed',
+                "Your consultation with Dr. {$doctorName} has been completed. View prescriptions in your dashboard.",
+                'success'
+            ));
+
             \Illuminate\Support\Facades\Mail::to($appointment->patient->user->email)->send(
                 new \App\Mail\AppointmentStatusMail($appointment, 'completed')
             );
         } catch (\Exception $e) {
-            \Log::error('Failed to send consultation completed email: ' . $e->getMessage());
+            \Log::error('Failed to send consultation completed communications: ' . $e->getMessage());
         }
 
         return redirect()->back()->with('success', 'Consultation marked as completed successfully.');

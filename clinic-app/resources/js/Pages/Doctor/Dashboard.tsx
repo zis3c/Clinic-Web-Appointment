@@ -18,27 +18,21 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
             <Head title="Doctor Dashboard" />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 h-[calc(100vh-140px)] lg:h-[calc(100vh-70px)] flex flex-col overflow-hidden">
-                
+
                 {/* Welcome Banner */}
-                <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 flex-shrink-0">
+                <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-4">
-                        {/* Notification Bell with Badge */}
                         <div className="relative p-3 bg-blue-50 rounded-2xl text-blue-600 flex-shrink-0">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                             </svg>
-                            {waiting_room.length > 0 && (
-                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white animate-bounce">
-                                    {waiting_room.length}
-                                </span>
-                            )}
                         </div>
                         <div>
                             <h3 className="text-2xl font-black text-gray-900 tracking-tight">
-                                Welcome, Dr. {auth.user.name}
+                                Welcome back, Dr. {auth.user.name}
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                                You have <span className="font-extrabold text-teal-600">{waiting_room.length} patient{waiting_room.length !== 1 ? 's' : ''} waiting</span> in the lobby.
+                                Manage consultations, schedules, and patient flow from here.
                             </p>
                         </div>
                     </div>
@@ -50,7 +44,7 @@ export default function Dashboard({ auth, schedules = [], stats = { total_appoin
                         Manage Schedules
                     </Link>
                 </div>
-
+                
                 {/* KPI Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-shrink-0">
                     {/* Total Bookings */}

@@ -37,7 +37,7 @@ export default function Doctors({ auth, doctors }: any) {
         >
             <Head title="Find a Doctor" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 pb-8">
                     
                     {/* Search & Specialty Filter Header */}
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
@@ -93,7 +93,7 @@ export default function Doctors({ auth, doctors }: any) {
 
                     {/* Doctors Grid */}
                     {filteredDoctors.length > 0 ? (
-                        <div className="overflow-y-auto custom-scrollbar h-[calc(100vh-310px)] pr-2 pb-6">
+                        <div className="pr-2 pb-6">
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-1">
                                 {filteredDoctors.map((doctor: any) => (
                                     <div key={doctor.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full">
@@ -135,7 +135,7 @@ export default function Doctors({ auth, doctors }: any) {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl h-[calc(100vh-310px)] flex flex-col justify-center items-center text-center border border-gray-100 shadow-sm p-12">
+                        <div className="bg-white rounded-2xl flex flex-col justify-center items-center text-center border border-gray-100 shadow-sm p-12 min-h-[320px]">
                             <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>

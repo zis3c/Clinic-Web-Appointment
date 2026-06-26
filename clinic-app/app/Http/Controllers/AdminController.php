@@ -164,6 +164,7 @@ class AdminController extends Controller
             'date' => 'required|date',
             'time' => 'required',
             'number_of_patients' => 'required|integer|min:1',
+            'slot_duration' => 'nullable|integer|min:5|max:180',
         ]);
 
         foreach ($request->doctor_ids as $doctorId) {
@@ -173,6 +174,7 @@ class AdminController extends Controller
                 'date' => $request->date,
                 'time' => $request->time,
                 'number_of_patients' => $request->number_of_patients,
+                'slot_duration' => $request->slot_duration ?? 30,
             ]);
         }
 
@@ -237,15 +239,29 @@ class AdminController extends Controller
             'status' => $request->status,
         ]);
 
-        // Send status update email if the status changed and is confirmed, rejected, or completed
-        if ($oldStatus !== $request->status && in_array($request->status, ['confirmed', 'rejected', 'completed'])) {
+        // Send status update email and DB notification if status changed
+        if ($oldStatus !== $request->status) {
             try {
                 $appointment->load(['patient.user', 'schedule.doctor.user']);
-                \Illuminate\Support\Facades\Mail::to($appointment->patient->user->email)->send(
-                    new \App\Mail\AppointmentStatusMail($appointment, $request->status)
-                );
+                
+                // In-App Database Notification
+                $statusUpper = ucfirst($request->status);
+                $message = "Your appointment with Dr. {$appointment->schedule->doctor->user->name} has been marked as {$request->status}.";
+                $type = $request->status === 'confirmed' ? 'success' : ($request->status === 'rejected' ? 'danger' : 'info');
+
+                $appointment->patient->user->notify(new \App\Notifications\ClinicNotification(
+                    "Appointment {$statusUpper}",
+                    $message,
+                    $type
+                ));
+
+                if (in_array($request->status, ['confirmed', 'rejected', 'completed'])) {
+                    \Illuminate\Support\Facades\Mail::to($appointment->patient->user->email)->send(
+                        new \App\Mail\AppointmentStatusMail($appointment, $request->status)
+                    );
+                }
             } catch (\Exception $e) {
-                \Log::error('Failed to send status update email: ' . $e->getMessage());
+                \Log::error('Failed to send status update communications: ' . $e->getMessage());
             }
         }
 
@@ -303,6 +319,27 @@ class AdminController extends Controller
             'checked_in_at' => now(),
             'status' => 'confirmed', // Ensure it is confirmed if they are checking in
         ]);
+
+        // Notify patient and doctor users via DatabaseNotification
+        try {
+            $appointment->load(['patient.user', 'schedule.doctor.user']);
+            
+            // Notify patient
+            $appointment->patient->user->notify(new \App\Notifications\ClinicNotification(
+                'Checked In Successfully',
+                "You have been checked in for your appointment with Dr. {$appointment->schedule->doctor->user->name}. Please proceed to the waiting room.",
+                'success'
+            ));
+
+            // Notify doctor
+            $appointment->schedule->doctor->user->notify(new \App\Notifications\ClinicNotification(
+                'Patient Arrived',
+                "Patient {$appointment->patient->user->name} has checked in and is waiting in the lobby.",
+                'info'
+            ));
+        } catch (\Exception $e) {
+            \Log::error('Failed to notify users of check-in: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Patient ' . $appointment->patient->user->name . ' checked in successfully for Doctor ' . $appointment->schedule->doctor->user->name . '!');
     }
