@@ -150,7 +150,7 @@ class AdminController extends Controller
     public function schedules()
     {
         return Inertia::render('Admin/Schedules', [
-            'schedules' => Schedule::with(['doctor.user', 'appointments'])->get(),
+            'schedules' => Schedule::with(['doctor.user', 'appointments.patient.user'])->get(),
             'doctors' => Doctor::with('user')->get(),
         ]);
     }

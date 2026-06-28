@@ -1,0 +1,6 @@
+{
+  "files.exclude": {
+    "**/*.sqlite-wal": true,
+    "**/*.sqlite-shm": true
+  }
+}

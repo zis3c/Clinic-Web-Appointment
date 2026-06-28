@@ -42,7 +42,7 @@ class DoctorController extends Controller
         // Recent appointments
         $recent_appointments = Appointment::whereHas('schedule', function ($q) use ($doctor) {
             $q->where('doctor_id', $doctor->id);
-        })->with(['patient.user', 'schedule'])
+        })->with(['patient.user', 'schedule.doctor.user'])
           ->latest()
           ->take(5)
           ->get();
@@ -52,8 +52,9 @@ class DoctorController extends Controller
             $q->where('doctor_id', $doctor->id);
         })->where('checked_in', true)
           ->where('status', 'confirmed')
-          ->with(['patient.user', 'schedule'])
+          ->whereNotNull('checked_in_at')
           ->orderBy('checked_in_at', 'asc')
+          ->with(['patient.user', 'schedule.doctor.user'])
           ->get();
 
         return Inertia::render('Doctor/Dashboard', [

@@ -7,7 +7,7 @@ export default function Toast() {
     const [show, setShow] = useState(false);
     const [message, setMessage] = useState('');
     const [type, setType] = useState('success');
-    
+
     // Undo feature states
     const [undoData, setUndoData] = useState<{ onConfirm: () => void; onUndo: () => void } | null>(null);
     const [progress, setProgress] = useState(100);
@@ -51,7 +51,7 @@ export default function Toast() {
             setShow(true);
 
             const startTime = Date.now();
-            
+
             // Progress tick
             intervalRef.current = setInterval(() => {
                 const elapsed = Date.now() - startTime;
@@ -136,7 +136,7 @@ export default function Toast() {
                                     {type === 'success' ? 'Success!' : type === 'error' ? 'Action Failed' : 'Item Deleted'}
                                 </p>
                                 <p className="mt-1 text-sm text-gray-500 font-semibold break-words whitespace-normal leading-relaxed">{message}</p>
-                                
+
                                 {type === 'undo' && (
                                     <div className="mt-4 space-y-3.5">
                                         {/* Cylindrical / 3D capsule gauge UI */}
@@ -144,7 +144,7 @@ export default function Toast() {
                                             {/* Reflective light glaze on the glass cylinder */}
                                             <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none z-10"></div>
                                             {/* Dynamic color changing 3D cylinder gauge */}
-                                            <div 
+                                            <div
                                                 className="h-full rounded-full bg-gradient-to-r from-rose-500 via-amber-500 to-emerald-500 shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),_0_0_10px_rgba(244,63,94,0.3)] transition-all duration-75 ease-linear"
                                                 style={{ width: `${progress}%` }}
                                             ></div>

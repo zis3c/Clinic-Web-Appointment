@@ -1,18 +1,52 @@
 import { useState } from 'react';
 import SidebarLayout from '@/Layouts/SidebarLayout';
 import Modal from '@/Components/Modal';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
 import DoctorDetailsModal from '@/Components/DoctorDetailsModal';
 
 export default function Appointments({ auth, appointments }: any) {
     const [appointmentToCancel, setAppointmentToCancel] = useState<number | null>(null);
     const [selectedDoctorForModal, setSelectedDoctorForModal] = useState<any>(null);
+    const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
+
+    const handleConfirmCancel = () => {
+        if (!appointmentToCancel) return;
+        const targetId = appointmentToCancel;
+        
+        // Find appointment details for toast
+        const apt = appointments.find((a: any) => a.id === targetId);
+        const drName = apt?.schedule?.doctor?.user?.name || 'Doctor';
+
+        setPendingDeleteIds(prev => [...prev, targetId]);
+        setAppointmentToCancel(null);
+
+        // Dispatch undo toast event
+        const event = new CustomEvent('show-undo-toast', {
+            detail: {
+                message: `Appointment with Dr. ${drName} has been cancelled.`,
+                duration: 5000,
+                onConfirm: () => {
+                    // Send real delete request to backend
+                    router.delete(route('patient.appointments.destroy', targetId), {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                        }
+                    });
+                },
+                onUndo: () => {
+                    // Remove from pending UI list
+                    setPendingDeleteIds(prev => prev.filter(id => id !== targetId));
+                }
+            }
+        });
+        window.dispatchEvent(event);
+    };
 
     return (
         <SidebarLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">My Appointments</h2>}
         >
             <Head title="My Appointments" />
 
@@ -49,7 +83,7 @@ export default function Appointments({ auth, appointments }: any) {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {appointments.map((appointment: any) => (
+                                {appointments.filter((apt: any) => !pendingDeleteIds.includes(apt.id)).map((appointment: any) => (
                                     <tr key={appointment.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className="px-4 py-2 inline-flex text-sm leading-5 font-bold rounded-xl bg-blue-100 text-blue-800 border border-blue-200">
@@ -120,7 +154,7 @@ export default function Appointments({ auth, appointments }: any) {
                                 ))}
                             </tbody>
                         </table>
-                        {(!appointments || appointments.length === 0) && (
+                        {(!appointments || appointments.filter((apt: any) => !pendingDeleteIds.includes(apt.id)).length === 0) && (
                             <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
                                 You don't have any upcoming appointments.
                             </div>
@@ -149,16 +183,12 @@ export default function Appointments({ auth, appointments }: any) {
                         >
                             Keep It
                         </button>
-                        <Link 
-                            href={appointmentToCancel ? route('patient.appointments.destroy', appointmentToCancel) : '#'}
-                            method="delete"
-                            as="button"
-                            onClick={() => setAppointmentToCancel(null)}
-                            preserveScroll
+                        <button 
+                            onClick={handleConfirmCancel}
                             className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-bold rounded-xl transition-all text-center shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
                             Yes, Cancel
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </Modal>

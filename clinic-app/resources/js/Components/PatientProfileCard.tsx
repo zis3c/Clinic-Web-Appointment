@@ -17,8 +17,8 @@ export default function PatientProfileCard({
                 <div className="flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10 px-8 py-6 border-b border-gray-100">
                     <h3 className="text-2xl font-bold text-gray-900">Patient Details</h3>
                     {onClose && (
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <button onClick={onClose} className="text-gray-400 hover:text-rose-500 transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95 bg-gray-50 hover:bg-rose-50 p-1.5 rounded-full shadow-sm outline-none focus:outline-none focus:ring-0 active:outline-none">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     )}
                 </div>
@@ -34,7 +34,7 @@ export default function PatientProfileCard({
                     {onClose && (
                         <button 
                             onClick={onClose} 
-                            className="flex items-center text-gray-500 hover:text-gray-700 bg-white hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors shadow-sm border border-gray-200 font-medium text-sm"
+                            className="flex items-center text-gray-500 hover:text-gray-800 bg-white hover:bg-gray-50 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 border border-gray-200 font-bold text-sm outline-none focus:outline-none focus:ring-0 active:outline-none"
                         >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                             Back
@@ -46,7 +46,7 @@ export default function PatientProfileCard({
             <div className={`${variant === 'modal' ? 'px-8 pb-8 pt-4' : ''} flex-1`}>
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4 h-full">
                         <div className="flex items-center gap-4 border-b border-gray-100 pb-4 mb-4">
-                            <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-sm">
+                            <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-tr from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-sm">
                                 {patient.user?.name?.charAt(0) || '?'}
                             </div>
                             <div>

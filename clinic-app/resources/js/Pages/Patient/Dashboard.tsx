@@ -88,18 +88,25 @@ export default function Dashboard({ auth, appointments = [] }: any) {
     return (
         <SidebarLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">Patient Dashboard</h2>}
         >
             <Head title="Patient Dashboard" />
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6 pb-8 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 
                 {/* Welcome Banner */}
                 <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-4">
                         {/* Calendar Icon with Badge */}
-                        <div className="relative p-3 bg-blue-50 rounded-2xl text-blue-600 flex-shrink-0">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button 
+                            onClick={() => {
+                                if (sortedUpcoming.length > 0) {
+                                    setSelectedAptForDetails(sortedUpcoming[0]);
+                                }
+                            }}
+                            className={`relative p-3 rounded-2xl text-blue-600 flex-shrink-0 transition-all outline-none focus:outline-none focus:ring-0 active:outline-none group ${sortedUpcoming.length > 0 ? 'bg-blue-50 hover:bg-blue-100 cursor-pointer hover:shadow-md hover:-translate-y-0.5' : 'bg-gray-50 cursor-default'}`}
+                            title={sortedUpcoming.length > 0 ? "View Next Appointment" : "No upcoming appointments"}
+                        >
+                            <svg className={`w-6 h-6 transition-transform ${sortedUpcoming.length > 0 ? 'group-hover:scale-110 group-active:scale-95' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                             {upcomingAppointments.length > 0 && (
@@ -107,7 +114,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                     {upcomingAppointments.length}
                                 </span>
                             )}
-                        </div>
+                        </button>
                         <div>
                             <h3 className="text-2xl font-black text-gray-900 tracking-tight">
                                 Welcome back, {auth.user.name}
@@ -227,7 +234,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
 
                     <div className="p-6">
                         {(!appointments || appointments.length === 0) ? (
-                            <div className="text-center h-[calc(100vh-390px)] flex flex-col justify-center items-center">
+                            <div className="text-center h-[calc(100vh-450px)] flex flex-col justify-center items-center">
                                 <div className="mx-auto h-16 w-16 text-gray-300 mb-4">
                                     <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -237,7 +244,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                 <p className="text-xs text-gray-400 mt-1">Book your first appointment to get started.</p>
                             </div>
                         ) : (
-                            <div className="space-y-4 h-[calc(100vh-390px)] overflow-y-auto custom-scrollbar pr-2 pb-2">
+                            <div className="space-y-4 h-[calc(100vh-450px)] overflow-y-auto custom-scrollbar pr-2 pb-2">
                                 {appointments.map((apt: any) => {
                                     return (
                                         <div 
@@ -267,7 +274,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                                     </p>
                                                     {apt.time_slot && (
                                                         <span className="inline-flex items-center mt-1 px-2 py-0.5 bg-blue-50 text-[10px] text-blue-600 font-bold rounded border border-blue-100">
-                                                            Slot: {apt.time_slot}
+                                                            Slot: {formatTime12Hour(apt.time_slot)}
                                                         </span>
                                                     )}
                                                 </div>
@@ -325,18 +332,18 @@ export default function Dashboard({ auth, appointments = [] }: any) {
             />
 
             {/* EHR Details Modal */}
-            {selectedAptForEHR && (
-                <Modal
-                    show={selectedAptForEHR !== null}
-                    onClose={() => setSelectedAptForEHR(null)}
-                    maxWidth="md"
-                >
+            <Modal
+                show={selectedAptForEHR !== null}
+                onClose={() => setSelectedAptForEHR(null)}
+                maxWidth="md"
+            >
+                {selectedAptForEHR && (
                     <div className="p-8 relative">
                         <button 
                             onClick={() => setSelectedAptForEHR(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors bg-gray-100 rounded-full p-1 focus:outline-none"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-rose-500 transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95 bg-gray-50 hover:bg-rose-50 p-1.5 rounded-full shadow-sm z-20"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
 
                         <div className="text-center mb-6">
@@ -403,13 +410,13 @@ export default function Dashboard({ auth, appointments = [] }: any) {
 
                         <button 
                             onClick={() => setSelectedAptForEHR(null)}
-                            className="mt-6 w-full py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:shadow-lg rounded-xl shadow-md transition-all text-center focus:outline-none"
+                            className="mt-6 w-full py-3 px-4 text-sm font-black text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-1 active:translate-y-0 rounded-xl shadow-md transition-all duration-300 text-center focus:outline-none"
                         >
                             Close Record
                         </button>
                     </div>
-                </Modal>
-            )}
+                )}
+            </Modal>
         </SidebarLayout>
     );
 }

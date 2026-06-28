@@ -38,15 +38,15 @@ export default function SessionDetailsModal({ selectedSession, onClose }: { sele
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className={`w-full max-h-[85vh] transform overflow-hidden rounded-3xl bg-white text-left align-middle shadow-2xl transition-all duration-300 flex ${viewPatient ? 'max-w-5xl' : 'max-w-2xl'}`}>
+                            <Dialog.Panel className={`w-full max-h-[85vh] transform overflow-hidden rounded-3xl bg-white text-left align-middle shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex ${viewPatient ? 'max-w-5xl min-h-[650px]' : 'max-w-2xl'}`}>
                                 
                                 {/* Left Column: Booking Info */}
-                                <div className={`p-8 max-h-[85vh] transition-all duration-300 relative flex flex-col ${viewPatient ? 'w-1/2 border-r border-gray-100' : 'w-full'}`}>
+                                <div className={`p-8 max-h-[85vh] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] relative flex flex-col ${viewPatient ? 'w-1/2 border-r border-gray-100' : 'w-full'}`}>
                                     <button 
                                         onClick={onClose}
-                                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full p-2 transition-colors z-20"
+                                        className="absolute top-4 right-4 text-gray-400 hover:text-rose-500 transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95 bg-gray-50 hover:bg-rose-50 p-1.5 rounded-full shadow-sm z-20 outline-none focus:outline-none focus:ring-0 active:outline-none"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </button>
 
                                 {internalSession && (
@@ -106,7 +106,7 @@ export default function SessionDetailsModal({ selectedSession, onClose }: { sele
                                 </div>
 
                                 {/* Right Column: Patient Details */}
-                                <div className={`bg-gray-50 transition-all duration-300 overflow-hidden relative ${viewPatient ? 'w-1/2 opacity-100' : 'w-0 opacity-0'}`}>
+                                <div className={`bg-gray-50 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden relative ${viewPatient ? 'w-1/2 opacity-100' : 'w-0 opacity-0'}`}>
                                     {viewPatient && (
                                         <div className="absolute inset-0 overflow-y-auto custom-scrollbar modal-scrollbar">
                                             <PatientProfileCard 

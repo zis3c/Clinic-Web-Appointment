@@ -31,10 +31,7 @@ export default function Doctors({ auth, doctors }: any) {
     });
 
     return (
-        <SidebarLayout
-            user={auth.user}
-            header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">Find a Doctor</h2>}
-        >
+        <SidebarLayout user={auth.user}>
             <Head title="Find a Doctor" />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 pb-8">
@@ -67,9 +64,9 @@ export default function Doctors({ auth, doctors }: any) {
                         <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-2 px-2 no-scrollbar">
                             <button
                                 onClick={() => setSelectedSpecialty('')}
-                                className={`px-4 py-2 text-xs font-bold rounded-full transition-all shrink-0 border ${
+                                className={`px-4 py-2 text-xs font-bold rounded-full transition-all shrink-0 border outline-none focus:outline-none focus:ring-0 active:outline-none ${
                                     selectedSpecialty === ''
-                                        ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
+                                        ? 'bg-blue-600 text-white border-blue-600'
                                         : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                                 }`}
                             >
@@ -79,9 +76,9 @@ export default function Doctors({ auth, doctors }: any) {
                                 <button
                                     key={specialty}
                                     onClick={() => setSelectedSpecialty(specialty)}
-                                    className={`px-4 py-2 text-xs font-bold rounded-full transition-all shrink-0 border ${
+                                    className={`px-4 py-2 text-xs font-bold rounded-full transition-all shrink-0 border outline-none focus:outline-none focus:ring-0 active:outline-none ${
                                         selectedSpecialty === specialty
-                                            ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
+                                            ? 'bg-blue-600 text-white border-blue-600'
                                             : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                                     }`}
                                 >
@@ -101,7 +98,7 @@ export default function Doctors({ auth, doctors }: any) {
                                             onClick={() => setSelectedDoctorForModal(doctor)}
                                             className="flex items-center space-x-4 mb-4 cursor-pointer group/avatar"
                                         >
-                                            <div className="h-16 w-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-2xl font-bold shadow-inner group-hover/avatar:scale-105 transition-transform duration-200">
+                                            <div className="h-16 w-16 shrink-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-2xl font-bold shadow-inner group-hover/avatar:scale-105 transition-transform duration-200">
                                                 {doctor.user?.avatar ? (
                                                     <img 
                                                         src={`/storage/${doctor.user.avatar}`} 
@@ -127,7 +124,7 @@ export default function Doctors({ auth, doctors }: any) {
                                                 View Professional Profile Details →
                                             </button>
                                         </div>
-                                        <Link href={route('patient.schedules.index')} className="block text-center w-full py-2 px-4 bg-gray-50 hover:bg-blue-50 text-blue-700 font-semibold rounded-xl border border-blue-100 transition-colors mt-auto">
+                                        <Link href={`${route('patient.schedules.index')}?search=${encodeURIComponent(doctor.user?.name || '')}`} className="block text-center w-full py-2 px-4 bg-gray-50 hover:bg-blue-50 text-blue-700 font-semibold rounded-xl border border-blue-100 transition-colors mt-auto">
                                             View Schedules & Book
                                         </Link>
                                     </div>
