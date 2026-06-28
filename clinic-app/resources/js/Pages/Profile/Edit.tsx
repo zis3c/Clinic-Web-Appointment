@@ -19,18 +19,18 @@ export default function Edit({ auth, mustVerifyEmail, status, sessions = [] }: a
     return (
         <SidebarLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-2xl text-gray-800 leading-tight">Account Settings</h2>}
+            header={<h2 className="font-semibold text-2xl text-gray-800 dark:text-slate-100 leading-tight">Account Settings</h2>}
         >
             <Head title="Profile Settings" />
 
             {/* Unscrollable height container */}
-            <div className="h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] min-h-[600px] w-full flex flex-col md:flex-row bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden max-w-7xl mx-auto">
+            <div className="h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] min-h-[600px] w-full flex flex-col md:flex-row bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden max-w-7xl mx-auto transition-colors">
                 
                 {/* Left Side: Settings Navigation Menu */}
-                <div className="w-full md:w-80 bg-gray-50 border-r border-gray-200 flex flex-col">
+                <div className="w-full md:w-80 bg-gray-50 dark:bg-slate-900/50 border-r border-gray-200 dark:border-slate-700 flex flex-col">
                     <div className="p-6 pb-2">
-                        <h3 className="text-lg font-bold text-gray-900">Settings</h3>
-                        <p className="text-sm text-gray-500 mt-1">Manage your account preferences and security.</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Settings</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your account preferences and security.</p>
                     </div>
                     <nav className="flex-1 overflow-y-auto p-4 space-y-1">
                         {tabs.map((tab) => (
@@ -39,11 +39,11 @@ export default function Edit({ auth, mustVerifyEmail, status, sessions = [] }: a
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl transition-all duration-200 font-medium border ${
                                     activeTab === tab.id 
-                                    ? 'bg-white text-blue-700 shadow-sm border-gray-200' 
-                                    : 'border-transparent text-gray-600 hover:bg-white/60 hover:text-gray-900'
+                                    ? 'bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-400 shadow-sm border-gray-200 dark:border-slate-600' 
+                                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
                                 }`}
                             >
-                                <svg className={`w-5 h-5 ${activeTab === tab.id ? 'text-blue-600' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className={`w-5 h-5 ${activeTab === tab.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={tab.icon}></path>
                                 </svg>
                                 {tab.name}
@@ -53,13 +53,13 @@ export default function Edit({ auth, mustVerifyEmail, status, sessions = [] }: a
                 </div>
 
                 {/* Right Side: Active Settings Pane */}
-                <div className="flex-1 bg-white overflow-y-auto">
+                <div className="flex-1 bg-white dark:bg-slate-800 overflow-y-auto transition-colors">
                     <div className="p-8 lg:p-12 max-w-3xl">
                         
                         {/* Profile Tab */}
                         {activeTab === 'profile' && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Profile Information</h3>
                                 <UpdateProfileInformationForm
                                     mustVerifyEmail={mustVerifyEmail}
                                     status={status}
@@ -70,7 +70,7 @@ export default function Edit({ auth, mustVerifyEmail, status, sessions = [] }: a
                         {/* Security Tab */}
                         {activeTab === 'security' && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Security & Password</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Security & Password</h3>
                                 <UpdatePasswordForm />
                             </div>
                         )}
@@ -85,7 +85,7 @@ export default function Edit({ auth, mustVerifyEmail, status, sessions = [] }: a
                         {/* Danger Zone Tab */}
                         {activeTab === 'danger' && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Danger Zone</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Danger Zone</h3>
                                 <DeleteUserForm />
                             </div>
                         )}

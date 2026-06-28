@@ -47,13 +47,13 @@ export default function LogoutOtherBrowserSessionsForm({ sessions, className = '
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Browser Sessions</h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white">Browser Sessions</h2>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Manage and log out your active sessions on other browsers and devices.
                 </p>
             </header>
 
-            <div className="max-w-xl mt-6 text-sm text-gray-600">
+            <div className="max-w-xl mt-6 text-sm text-gray-600 dark:text-gray-400">
                 If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
             </div>
 
@@ -74,12 +74,12 @@ export default function LogoutOtherBrowserSessionsForm({ sessions, className = '
                             </div>
 
                             <div className="ml-3">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-gray-600 dark:text-gray-300">
                                     {session.agent.platform} - {session.agent.browser}
                                 </div>
 
                                 <div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
                                         {session.ip_address},
 
                                         {session.is_current_device ? (
@@ -102,12 +102,12 @@ export default function LogoutOtherBrowserSessionsForm({ sessions, className = '
             </div>
 
             <Modal show={confirmingLogout} onClose={closeModal}>
-                <form onSubmit={logoutOtherBrowserSessions} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
+                <form onSubmit={logoutOtherBrowserSessions} className="p-6 dark:bg-slate-800">
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                         Are you sure you want to log out of your other browser sessions?
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
                     </p>
 

@@ -265,6 +265,8 @@ class AdminController extends Controller
             }
         }
 
+        event(new \App\Events\AppointmentUpdated('Appointment status updated'));
+
         return redirect()->back()->with('success', 'Appointment status updated to ' . ucfirst($request->status) . ' successfully.');
     }
 
@@ -340,6 +342,8 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             \Log::error('Failed to notify users of check-in: ' . $e->getMessage());
         }
+
+        event(new \App\Events\AppointmentUpdated('Appointment checked in'));
 
         return redirect()->back()->with('success', 'Patient ' . $appointment->patient->user->name . ' checked in successfully for Doctor ' . $appointment->schedule->doctor->user->name . '!');
     }

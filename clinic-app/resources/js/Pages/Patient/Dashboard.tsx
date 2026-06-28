@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SidebarLayout from '@/Layouts/SidebarLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
 import DoctorDetailsModal from '@/Components/DoctorDetailsModal';
 import AppointmentDetailsModal from '@/Components/AppointmentDetailsModal';
@@ -10,6 +10,20 @@ export default function Dashboard({ auth, appointments = [] }: any) {
     const [selectedDoctorForModal, setSelectedDoctorForModal] = useState<any>(null);
     const [selectedAptForDetails, setSelectedAptForDetails] = useState<any>(null);
     const [selectedAptForEHR, setSelectedAptForEHR] = useState<any>(null);
+
+    useEffect(() => {
+        if (window.Echo) {
+            const channel = window.Echo.channel('queue');
+            channel.listen('AppointmentUpdated', (e: any) => {
+                router.reload({ only: ['appointments'] });
+            });
+
+            return () => {
+                window.Echo.leaveChannel('queue');
+            };
+        }
+    }, []);
+
 
     const getLocalDateString = (d: Date) => {
         const year = d.getFullYear();
@@ -94,7 +108,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 
                 {/* Welcome Banner */}
-                <div className="relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="relative overflow-hidden bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-colors">
                     <div className="flex items-center gap-4">
                         {/* Calendar Icon with Badge */}
                         <button 
@@ -103,23 +117,23 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                     setSelectedAptForDetails(sortedUpcoming[0]);
                                 }
                             }}
-                            className={`relative p-3 rounded-2xl text-blue-600 flex-shrink-0 transition-all outline-none focus:outline-none focus:ring-0 active:outline-none group ${sortedUpcoming.length > 0 ? 'bg-blue-50 hover:bg-blue-100 cursor-pointer hover:shadow-md hover:-translate-y-0.5' : 'bg-gray-50 cursor-default'}`}
+                            className={`relative p-3 rounded-2xl text-blue-600 dark:text-blue-400 flex-shrink-0 transition-all outline-none focus:outline-none focus:ring-0 active:outline-none group ${sortedUpcoming.length > 0 ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 cursor-pointer hover:shadow-md hover:-translate-y-0.5' : 'bg-gray-50 dark:bg-slate-700 cursor-default'}`}
                             title={sortedUpcoming.length > 0 ? "View Next Appointment" : "No upcoming appointments"}
                         >
                             <svg className={`w-6 h-6 transition-transform ${sortedUpcoming.length > 0 ? 'group-hover:scale-110 group-active:scale-95' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                             {upcomingAppointments.length > 0 && (
-                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white animate-bounce">
+                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 animate-bounce">
                                     {upcomingAppointments.length}
                                 </span>
                             )}
                         </button>
                         <div>
-                            <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                                 Welcome back, {auth.user.name}
                             </h3>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                 {getGreetingMessage()}
                             </p>
                         </div>
@@ -178,12 +192,12 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                 {/* KPI Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Upcoming Appointments */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-teal-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-teal-50 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+                    <div className="relative overflow-hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group hover:shadow-xl hover:shadow-teal-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-teal-50 to-transparent dark:from-teal-500/10 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Upcoming Consultations</p>
-                                <h3 className="text-3xl font-black text-gray-900 tracking-tight">{upcomingAppointments.length}</h3>
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Upcoming Consultations</p>
+                                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{upcomingAppointments.length}</h3>
                             </div>
                             <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-teal-400 to-emerald-500 text-white flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-md shadow-teal-500/30">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -192,12 +206,12 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                     </div>
 
                     {/* Total Bookings */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+                    <div className="relative overflow-hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-500/10 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Booked</p>
-                                <h3 className="text-3xl font-black text-gray-900 tracking-tight">{totalAppointments}</h3>
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Total Booked</p>
+                                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{totalAppointments}</h3>
                             </div>
                             <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-500 to-blue-600 text-white flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-md shadow-blue-500/30">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
@@ -206,12 +220,12 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                     </div>
 
                     {/* Unique Doctors */}
-                    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-purple-50 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+                    <div className="relative overflow-hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-500/10 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
                         <div className="flex items-center justify-between relative z-10">
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Doctors Consulted</p>
-                                <h3 className="text-3xl font-black text-gray-900 tracking-tight">{uniqueDoctorsCount}</h3>
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Doctors Consulted</p>
+                                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{uniqueDoctorsCount}</h3>
                             </div>
                             <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300 shadow-md shadow-purple-500/30">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -221,11 +235,11 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                 </div>
 
                 {/* Appointments Layout */}
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-                    <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white">
+                <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden flex flex-col">
+                    <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900">
                         <div>
-                            <h3 className="font-bold text-gray-800">Your Appointment History</h3>
-                            <p className="text-xs text-gray-500">Overview of all active and past consultations</p>
+                            <h3 className="font-bold text-gray-800 dark:text-slate-100">Your Appointment History</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Overview of all active and past consultations</p>
                         </div>
                         <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
                             {appointments.length} Total
@@ -235,13 +249,13 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                     <div className="p-6">
                         {(!appointments || appointments.length === 0) ? (
                             <div className="text-center h-[calc(100vh-450px)] flex flex-col justify-center items-center">
-                                <div className="mx-auto h-16 w-16 text-gray-300 mb-4">
+                                <div className="mx-auto h-16 w-16 text-gray-300 dark:text-gray-600 mb-4">
                                     <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h4 className="font-bold text-gray-800">No appointments found</h4>
-                                <p className="text-xs text-gray-400 mt-1">Book your first appointment to get started.</p>
+                                <h4 className="font-bold text-gray-800 dark:text-slate-200">No appointments found</h4>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Book your first appointment to get started.</p>
                             </div>
                         ) : (
                             <div className="space-y-4 h-[calc(100vh-450px)] overflow-y-auto custom-scrollbar pr-2 pb-2">
@@ -250,7 +264,7 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                         <div 
                                             key={apt.id} 
                                             onClick={() => setSelectedAptForDetails(apt)}
-                                            className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-2xl hover:bg-slate-50/50 hover:border-blue-200 hover:shadow-md cursor-pointer group/card transition-all duration-200 gap-4"
+                                            className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 dark:border-slate-700/50 rounded-2xl hover:bg-slate-50/50 dark:hover:bg-slate-700/30 hover:border-blue-200 dark:hover:border-blue-800/50 hover:shadow-md cursor-pointer group/card transition-all duration-200 gap-4"
                                             title="Click to view appointment status details"
                                         >
                                             <div className="flex items-center space-x-4">
@@ -266,14 +280,14 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-base font-bold text-gray-900 group-hover/card:text-blue-600 transition-colors">
+                                                    <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors">
                                                         Dr. {apt.schedule?.doctor?.user?.name || 'Unknown'}
                                                     </h4>
-                                                    <p className="text-xs text-gray-500 font-medium mt-0.5">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
                                                         {new Date(apt.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {formatTime12Hour(apt.schedule?.time)}
                                                     </p>
                                                     {apt.time_slot && (
-                                                        <span className="inline-flex items-center mt-1 px-2 py-0.5 bg-blue-50 text-[10px] text-blue-600 font-bold rounded border border-blue-100">
+                                                        <span className="inline-flex items-center mt-1 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-[10px] text-blue-600 dark:text-blue-400 font-bold rounded border border-blue-100 dark:border-blue-800/30">
                                                             Slot: {formatTime12Hour(apt.time_slot)}
                                                         </span>
                                                     )}
@@ -347,48 +361,48 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                         </button>
 
                         <div className="text-center mb-6">
-                            <div className="h-14 w-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="h-14 w-14 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">Consultation EHR Record</h3>
-                            <p className="text-xs text-gray-500 mt-1">JanjiCare Completed Consultation Note</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Consultation EHR Record</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">JanjiCare Completed Consultation Note</p>
                         </div>
 
-                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6 space-y-4">
-                            <div className="flex flex-col sm:flex-row justify-between text-sm pb-3 border-b border-slate-200/60 gap-2">
+                        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
+                            <div className="flex flex-col sm:flex-row justify-between text-sm pb-3 border-b border-slate-200/60 dark:border-slate-700/60 gap-2">
                                 <div>
-                                    <p className="text-xs text-slate-400 font-bold">DOCTOR</p>
-                                    <p className="font-extrabold text-slate-800 mt-0.5">Dr. {selectedAptForEHR.schedule?.doctor?.user?.name}</p>
-                                    <p className="text-xs text-blue-600 font-bold">{selectedAptForEHR.schedule?.doctor?.specialty?.name}</p>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DOCTOR</p>
+                                    <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">Dr. {selectedAptForEHR.schedule?.doctor?.user?.name}</p>
+                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-bold">{selectedAptForEHR.schedule?.doctor?.specialty?.name}</p>
                                 </div>
                                 <div className="sm:text-right">
-                                    <p className="text-xs text-slate-400 font-bold">DATE & TIME</p>
-                                    <p className="font-extrabold text-slate-800 mt-0.5">
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DATE & TIME</p>
+                                    <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">
                                         {new Date(selectedAptForEHR.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                                     </p>
-                                    <p className="text-xs text-slate-500 font-semibold">{formatTime12Hour(selectedAptForEHR.schedule?.time)}</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{formatTime12Hour(selectedAptForEHR.schedule?.time)}</p>
                                 </div>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Diagnosis</h4>
-                                <p className="text-sm font-extrabold text-slate-900 bg-teal-50/50 border border-teal-100/50 p-3 rounded-xl mt-1.5 leading-relaxed">
+                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Diagnosis</h4>
+                                <p className="text-sm font-extrabold text-slate-900 dark:text-white bg-teal-50/50 dark:bg-teal-900/20 border border-teal-100/50 dark:border-teal-800/30 p-3 rounded-xl mt-1.5 leading-relaxed">
                                     {selectedAptForEHR.diagnosis || 'No diagnosis recorded.'}
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Prescriptions</h4>
-                                <p className="text-sm font-semibold text-slate-800 bg-blue-50/30 border border-blue-100/30 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed font-mono">
+                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prescriptions</h4>
+                                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 bg-blue-50/30 dark:bg-blue-900/20 border border-blue-100/30 dark:border-blue-800/30 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed font-mono">
                                     {selectedAptForEHR.prescriptions || 'No prescription written.'}
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clinical Notes</h4>
-                                <p className="text-sm text-slate-700 bg-white border border-slate-100 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed">
+                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Clinical Notes</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed">
                                     {selectedAptForEHR.notes || 'No doctor notes.'}
                                 </p>
                             </div>

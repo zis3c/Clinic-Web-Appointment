@@ -165,10 +165,10 @@ export default function Schedules({ auth, schedules }: any) {
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-col md:flex-row gap-4 mb-6">
+                <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex-col md:flex-row gap-4 mb-6 transition-colors">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-800">Available Doctor Sessions</h3>
-                        <p className="text-sm text-gray-500">Select an available session below to book your appointment.</p>
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100">Available Doctor Sessions</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Select an available session below to book your appointment.</p>
                     </div>
 
                     <div className="flex items-center gap-3 w-full md:w-auto">
@@ -182,22 +182,22 @@ export default function Schedules({ auth, schedules }: any) {
                                 placeholder="Search doctors, specialties..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 w-full md:w-60 border-gray-200 rounded-xl text-xs focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 h-10 transition-all outline-none"
+                                className="pl-9 w-full md:w-60 border-gray-200 dark:border-slate-700 rounded-xl text-xs focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 dark:bg-slate-900/50 dark:text-slate-200 h-10 transition-all outline-none placeholder-gray-400 dark:placeholder-gray-500"
                             />
                         </div>
 
                         {/* View Switcher Toggle */}
-                        <div className="flex bg-slate-100 p-1 rounded-xl">
+                        <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
                             <button
                                 onClick={() => setViewMode('table')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'table' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'table' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                                 Table
                             </button>
                             <button
                                 onClick={() => setViewMode('calendar')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'calendar' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'calendar' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 Calendar
@@ -209,18 +209,18 @@ export default function Schedules({ auth, schedules }: any) {
                 {/* Conditional View Rendering */}
                 {viewMode === 'table' ? (
                     /* TABLE VIEW */
-                    <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 relative">
+                    <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 relative transition-colors">
                         <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
+                            <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                                <thead className="bg-gray-50 dark:bg-slate-800 sticky top-0 z-10 ring-1 ring-gray-200 dark:ring-slate-700">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Doctor Details</th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session Info</th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Availability</th>
-                                        <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Doctor Details</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Session Info</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Availability</th>
+                                        <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                                     {filteredSchedules.map((schedule: any) => {
                                         const activeAppointments = schedule.appointments?.filter((apt: any) => apt.status !== 'rejected') || [];
                                         const isFull = activeAppointments.length >= schedule.number_of_patients;
@@ -228,7 +228,7 @@ export default function Schedules({ auth, schedules }: any) {
                                         const slotsLeft = schedule.number_of_patients - activeAppointments.length;
 
                                         return (
-                                            <tr key={schedule.id} className="hover:bg-gray-50 transition-colors">
+                                            <tr key={schedule.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div
                                                         onClick={() => setSelectedDoctorForModal(schedule.doctor)}
@@ -246,19 +246,19 @@ export default function Schedules({ auth, schedules }: any) {
                                                             )}
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-bold text-gray-900 group-hover/doctor:text-blue-600 transition-colors">Dr. {schedule.doctor.user.name}</div>
-                                                            <div className="text-xs text-blue-600 font-semibold">{schedule.doctor.specialty.name}</div>
+                                                            <div className="text-sm font-bold text-gray-900 dark:text-white group-hover/doctor:text-blue-600 dark:group-hover/doctor:text-blue-400 transition-colors">Dr. {schedule.doctor.user.name}</div>
+                                                            <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold">{schedule.doctor.specialty.name}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-bold text-gray-900">{schedule.title}</div>
-                                                    <div className="text-xs text-gray-500 mt-0.5">
+                                                    <div className="text-sm font-bold text-gray-900 dark:text-white">{schedule.title}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                                         {new Date(schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {formatTime12Hour(schedule.time)}
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full ${isFull ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                                                    <span className={`px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full ${isFull ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400'}`}>
                                                         {isFull ? 'Fully Booked' : `${slotsLeft} slots left`}
                                                     </span>
                                                 </td>
@@ -267,7 +267,7 @@ export default function Schedules({ auth, schedules }: any) {
                                                         onClick={() => openBookingModal(schedule)}
                                                         disabled={isFull || hasBooked}
                                                         className={`inline-flex items-center justify-center py-2 px-4 font-bold rounded-xl shadow-sm transition-all text-xs ${isFull || hasBooked
-                                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+                                                                ? 'bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed shadow-none'
                                                                 : 'bg-gradient-to-r from-teal-500 to-blue-600 text-white hover:shadow-md hover:scale-[1.02]'
                                                             }`}
                                                     >
@@ -300,20 +300,20 @@ export default function Schedules({ auth, schedules }: any) {
                     /* CALENDAR VIEW */
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start h-[calc(100vh-190px)]">
                         {/* Left Side: Custom Month Grid */}
-                        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full overflow-hidden">
+                        <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col h-full overflow-hidden transition-colors">
                             {/* Calendar Header */}
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="font-bold text-gray-800 text-base">{monthName}</h3>
+                                <h3 className="font-bold text-gray-800 dark:text-slate-100 text-base">{monthName}</h3>
                                 <div className="flex items-center gap-1.5">
                                     <button
                                         onClick={prevMonth}
-                                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-slate-50 transition-colors"
+                                        className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                                     </button>
                                     <button
                                         onClick={nextMonth}
-                                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-slate-50 transition-colors"
+                                        className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                                     </button>
@@ -321,7 +321,7 @@ export default function Schedules({ auth, schedules }: any) {
                             </div>
 
                             {/* Calendar Weekday Names */}
-                            <div className="grid grid-cols-7 gap-1 text-center font-bold text-gray-400 text-[10px] uppercase tracking-wider mb-2">
+                            <div className="grid grid-cols-7 gap-1 text-center font-bold text-gray-400 dark:text-gray-500 text-[10px] uppercase tracking-wider mb-2">
                                 {dayNames.map(d => <div key={d}>{d}</div>)}
                             </div>
 
@@ -329,7 +329,7 @@ export default function Schedules({ auth, schedules }: any) {
                             <div className="grid grid-cols-7 gap-2 flex-1">
                                 {calendarDays.map((day, idx) => {
                                     if (day === null) {
-                                        return <div key={`empty-${idx}`} className="bg-slate-50/20 rounded-xl" />;
+                                        return <div key={`empty-${idx}`} className="bg-slate-50/20 dark:bg-slate-900/20 rounded-xl" />;
                                     }
 
                                     const dayStr = getLocalDateString(day);
@@ -345,10 +345,10 @@ export default function Schedules({ auth, schedules }: any) {
                                             key={dayStr}
                                             onClick={() => setSelectedDate(dayStr)}
                                             className={`p-2 rounded-2xl border text-center flex flex-col justify-between items-center cursor-pointer transition-all min-h-[50px] relative ${isSelected
-                                                    ? 'bg-blue-600 text-white border-transparent shadow-md scale-102'
+                                                    ? 'bg-blue-600 dark:bg-blue-600 text-white border-transparent shadow-md scale-102'
                                                     : isToday
-                                                        ? 'bg-blue-50/80 border-blue-200 text-blue-700 hover:bg-blue-100/50'
-                                                        : 'bg-white border-slate-100 text-gray-700 hover:bg-slate-50'
+                                                        ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-400 hover:bg-blue-100/50 dark:hover:bg-blue-800/30'
+                                                        : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                                                 }`}
                                         >
                                             <span className="text-xs font-black">{day.getDate()}</span>
@@ -364,10 +364,10 @@ export default function Schedules({ auth, schedules }: any) {
                         </div>
 
                         {/* Right Side: Sidebar listing sessions for the selected calendar day */}
-                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full overflow-hidden">
-                            <div className="border-b border-slate-100 pb-3 mb-4">
-                                <h3 className="font-bold text-gray-800 text-sm">Sessions Available</h3>
-                                <p className="text-xs text-blue-600 font-semibold mt-0.5">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col h-full overflow-hidden transition-colors">
+                            <div className="border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                                <h3 className="font-bold text-gray-800 dark:text-slate-100 text-sm">Sessions Available</h3>
+                                <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold mt-0.5">
                                     {new Date(selectedDate).toLocaleDateString(undefined, { dateStyle: 'long' })}
                                 </p>
                             </div>
@@ -389,7 +389,7 @@ export default function Schedules({ auth, schedules }: any) {
                                         return (
                                             <div
                                                 key={schedule.id}
-                                                className="p-4 border border-slate-100 rounded-2xl hover:border-blue-100 hover:bg-slate-50/50 transition-all flex flex-col gap-3"
+                                                className="p-4 border border-slate-100 dark:border-slate-700 rounded-2xl hover:border-blue-100 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-all flex flex-col gap-3 bg-white dark:bg-slate-800"
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div
@@ -403,22 +403,22 @@ export default function Schedules({ auth, schedules }: any) {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-xs font-black text-slate-800">Dr. {schedule.doctor.user.name}</h4>
-                                                        <p className="text-[10px] text-blue-600 font-bold">{schedule.doctor.specialty.name}</p>
+                                                        <h4 className="text-xs font-black text-slate-800 dark:text-slate-200">Dr. {schedule.doctor.user.name}</h4>
+                                                        <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">{schedule.doctor.specialty.name}</p>
                                                     </div>
                                                 </div>
 
-                                                <div className="border-t border-slate-100/50 pt-2 flex justify-between items-center text-xs">
+                                                <div className="border-t border-slate-100/50 dark:border-slate-700/50 pt-2 flex justify-between items-center text-xs">
                                                     <div>
-                                                        <p className="font-bold text-slate-700">{schedule.title}</p>
-                                                        <p className="text-slate-400 text-[10px] font-semibold mt-0.5">{formatTime12Hour(schedule.time)} ({slotsLeft} left)</p>
+                                                        <p className="font-bold text-slate-700 dark:text-slate-300">{schedule.title}</p>
+                                                        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-semibold mt-0.5">{formatTime12Hour(schedule.time)} ({slotsLeft} left)</p>
                                                     </div>
 
                                                     <button
                                                         onClick={() => openBookingModal(schedule)}
                                                         disabled={isFull || hasBooked}
                                                         className={`py-1.5 px-3 rounded-lg font-black text-[10px] shadow-sm transition-all ${isFull || hasBooked
-                                                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
+                                                                ? 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none'
                                                                 : 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-103'
                                                             }`}
                                                     >
@@ -461,10 +461,10 @@ export default function Schedules({ auth, schedules }: any) {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-md transform flex flex-col max-h-[90vh] overflow-hidden rounded-3xl bg-white p-6 text-left align-middle shadow-2xl transition-all relative">
+                                <Dialog.Panel className="w-full max-w-md transform flex flex-col max-h-[90vh] overflow-hidden rounded-3xl bg-white dark:bg-slate-800 p-6 text-left align-middle shadow-2xl transition-all relative">
                                     <button
                                         onClick={closeBookingModal}
-                                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors bg-gray-100 rounded-full p-1 focus:outline-none z-10"
+                                        className="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-slate-700 rounded-full p-1 focus:outline-none z-10"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </button>
@@ -472,28 +472,28 @@ export default function Schedules({ auth, schedules }: any) {
                                     {selectedSchedule && (
                                         <>
                                             <div className="text-center mb-5 flex-shrink-0">
-                                                <div className="h-14 w-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <div className="h-14 w-14 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center mx-auto mb-3">
                                                     <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                 </div>
-                                                <Dialog.Title as="h3" className="text-2xl font-bold text-gray-900">
+                                                <Dialog.Title as="h3" className="text-2xl font-bold text-gray-900 dark:text-white">
                                                     Confirm Booking
                                                 </Dialog.Title>
-                                                <p className="text-sm text-gray-500 mt-1.5">Book your consultation session:</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Book your consultation session:</p>
                                             </div>
 
                                             <div className="flex-1 overflow-y-auto custom-scrollbar pr-3 mb-2">
-                                                <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-5">
-                                                    <p className="font-bold text-base text-slate-800 text-center mb-1">Dr. {selectedSchedule.doctor.user.name}</p>
-                                                    <p className="text-xs text-blue-600 font-semibold text-center mb-4">{selectedSchedule.doctor.specialty.name}</p>
+                                                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 mb-5">
+                                                    <p className="font-bold text-base text-slate-800 dark:text-slate-200 text-center mb-1">Dr. {selectedSchedule.doctor.user.name}</p>
+                                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold text-center mb-4">{selectedSchedule.doctor.specialty.name}</p>
 
-                                                    <div className="space-y-2 text-xs text-slate-600 border-t border-slate-200 pt-3">
+                                                    <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-3">
                                                         <div className="flex justify-between">
                                                             <span className="font-medium">Date:</span>
-                                                            <span className="text-slate-900 font-bold">{new Date(selectedSchedule.date).toLocaleDateString()}</span>
+                                                            <span className="text-slate-900 dark:text-slate-200 font-bold">{new Date(selectedSchedule.date).toLocaleDateString()}</span>
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="font-medium">Session Start:</span>
-                                                            <span className="text-slate-900 font-bold">{formatTime12Hour(selectedSchedule.time)}</span>
+                                                            <span className="text-slate-900 dark:text-slate-200 font-bold">{formatTime12Hour(selectedSchedule.time)}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -526,10 +526,10 @@ export default function Schedules({ auth, schedules }: any) {
                                                                         disabled={isBooked}
                                                                         onClick={() => setData('time_slot', slot)}
                                                                         className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${isBooked
-                                                                                ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed line-through'
+                                                                                ? 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-600 cursor-not-allowed line-through'
                                                                                 : isSelected
                                                                                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-transparent text-white shadow-md'
-                                                                                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
+                                                                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                                                                             }`}
                                                                     >
                                                                         <span>{formatTimeSlot12Hour(slot)}</span>
@@ -542,26 +542,26 @@ export default function Schedules({ auth, schedules }: any) {
                                                         </div>
                                                     </div>
 
-                                                    <div className="mb-2 flex items-start gap-3 bg-teal-50/50 p-4 rounded-xl border border-teal-100/50">
+                                                    <div className="mb-2 flex items-start gap-3 bg-teal-50/50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-100/50 dark:border-teal-800/50">
                                                         <input
                                                             type="checkbox"
                                                             id="confirm-checkbox"
                                                             checked={confirmCheckbox}
                                                             onChange={(e) => setConfirmCheckbox(e.target.checked)}
-                                                            className="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer flex-shrink-0"
+                                                            className="mt-0.5 h-4 w-4 rounded border-gray-300 dark:border-slate-600 text-teal-600 dark:bg-slate-700 focus:ring-teal-500 cursor-pointer flex-shrink-0"
                                                         />
-                                                        <label htmlFor="confirm-checkbox" className="text-xs text-slate-600 select-none cursor-pointer leading-relaxed">
+                                                        <label htmlFor="confirm-checkbox" className="text-xs text-slate-600 dark:text-slate-300 select-none cursor-pointer leading-relaxed">
                                                             I confirm that I want to book this appointment and will attend the scheduled session.
                                                         </label>
                                                     </div>
                                                 </form>
                                             </div>
 
-                                            <div className="flex gap-3 pt-4 border-t border-gray-100 flex-shrink-0 mt-3">
+                                            <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-slate-700 flex-shrink-0 mt-3">
                                                 <button
                                                     type="button"
                                                     onClick={closeBookingModal}
-                                                    className="flex-1 py-3 px-4 text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors focus:outline-none"
+                                                    className="flex-1 py-3 px-4 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-colors focus:outline-none"
                                                 >
                                                     Cancel
                                                 </button>

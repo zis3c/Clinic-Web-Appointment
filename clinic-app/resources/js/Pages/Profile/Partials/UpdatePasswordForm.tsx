@@ -7,8 +7,8 @@ import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
 export default function UpdatePasswordForm({ className = '' }: any) {
-    const passwordInput = useRef<any>();
-    const currentPasswordInput = useRef<any>();
+    const passwordInput = useRef<HTMLInputElement>(null);
+    const currentPasswordInput = useRef<HTMLInputElement>(null);
 
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -28,7 +28,7 @@ export default function UpdatePasswordForm({ className = '' }: any) {
         password_confirmation: '',
     });
 
-    const updatePassword = (e) => {
+    const updatePassword = (e: React.FormEvent) => {
         e.preventDefault();
 
         put(route('password.update'), {
@@ -37,12 +37,12 @@ export default function UpdatePasswordForm({ className = '' }: any) {
             onError: (errors) => {
                 if (errors.password) {
                     reset('password', 'password_confirmation');
-                    passwordInput.current.focus();
+                    passwordInput.current?.focus();
                 }
 
                 if (errors.current_password) {
                     reset('current_password');
-                    currentPasswordInput.current.focus();
+                    currentPasswordInput.current?.focus();
                 }
             },
         });
@@ -51,11 +51,11 @@ export default function UpdatePasswordForm({ className = '' }: any) {
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                     Update Password
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Ensure your account is using a long, random password to stay
                     secure.
                 </p>
@@ -174,7 +174,7 @@ export default function UpdatePasswordForm({ className = '' }: any) {
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                             Saved.
                         </p>
                     </Transition>

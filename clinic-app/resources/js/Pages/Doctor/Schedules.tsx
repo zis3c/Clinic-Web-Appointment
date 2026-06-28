@@ -96,22 +96,22 @@ export default function Schedules({ auth, schedules }: any) {
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-col md:flex-row gap-4">
+                <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex-col md:flex-row gap-4 transition-colors">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-800">Your Scheduled Sessions</h3>
-                        <p className="text-sm text-gray-500">View and manage your upcoming availability.</p>
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100">Your Scheduled Sessions</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">View and manage your upcoming availability.</p>
                     </div>
                     <div className="flex items-center gap-4 w-full md:w-auto">
                         <div className="relative w-full md:w-auto">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
                             <input 
                                 type="text" 
                                 placeholder="Search schedules..." 
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10 w-full md:w-64 border-gray-200 rounded-xl text-sm focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 h-11 transition-all outline-none"
+                                className="pl-10 w-full md:w-64 border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50 dark:bg-slate-900/50 dark:text-white h-11 transition-all outline-none"
                             />
                         </div>
                         <button 
@@ -124,42 +124,42 @@ export default function Schedules({ auth, schedules }: any) {
                 </div>
 
                 {/* Table */}
-                <div className="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 relative">
+                <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 relative transition-colors">
                     {/* Patch to cover the scrollbar track gap in the header */}
-                    <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 border-b border-gray-200 z-20"></div>
+                    <div className="absolute top-0 right-0 w-[8px] h-[49px] bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 z-20"></div>
 
                     <div className="overflow-x-auto h-[calc(100vh-190px)] overflow-y-auto custom-scrollbar flex flex-col">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50 sticky top-0 z-10 ring-1 ring-gray-200">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                            <thead className="bg-gray-50 dark:bg-slate-800 sticky top-0 z-10 ring-1 ring-gray-200 dark:ring-slate-700">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Session Details</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Capacity</th>
-                                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Session Details</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date & Time</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Capacity</th>
+                                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                                 {filteredSchedules.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((schedule: any) => {
                                     const isFull = schedule.appointments?.length >= schedule.number_of_patients;
                                     
                                     return (
-                                        <tr key={schedule.id} className="hover:bg-gray-50 transition-colors">
+                                        <tr key={schedule.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
+                                                    <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold">
                                                         {schedule.title.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="ml-4">
-                                                        <div className="text-sm font-bold text-gray-900">{schedule.title}</div>
+                                                        <div className="text-sm font-bold text-gray-900 dark:text-white">{schedule.title}</div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm font-bold text-gray-900">{new Date(schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-                                                <div className="text-sm text-gray-500">{formatTime12Hour(schedule.time)}</div>
+                                                <div className="text-sm font-bold text-gray-900 dark:text-white">{new Date(schedule.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                                                <div className="text-sm text-gray-500 dark:text-gray-400">{formatTime12Hour(schedule.time)}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${isFull ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${isFull ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400'}`}>
                                                     {schedule.appointments?.length || 0} / {schedule.number_of_patients} Booked
                                                 </span>
                                             </td>
@@ -167,17 +167,17 @@ export default function Schedules({ auth, schedules }: any) {
                                                 <div className="flex justify-end items-center space-x-5">
                                                     <button 
                                                         onClick={() => setSelectedSession(schedule)}
-                                                        className="text-blue-600 hover:text-blue-900 font-bold transition-colors"
+                                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 font-bold transition-colors"
                                                     >
                                                         View Bookings
                                                     </button>
                                                     
                                                     {/* Vertical Separator */}
-                                                    <div className="h-4 w-px bg-gray-300 rounded"></div>
+                                                    <div className="h-4 w-px bg-gray-300 dark:bg-gray-600 rounded"></div>
 
                                                     <button 
                                                         onClick={() => { setSessionToDelete(schedule); setIsCancelModalOpen(true); }}
-                                                        className="text-rose-500 hover:text-rose-700 font-bold transition-colors"
+                                                        className="text-rose-500 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-bold transition-colors"
                                                     >
                                                         Cancel Session
                                                     </button>
@@ -189,7 +189,7 @@ export default function Schedules({ auth, schedules }: any) {
                             </tbody>
                         </table>
                         {filteredSchedules.length === 0 && (
-                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500">
+                            <div className="flex-1 flex flex-col justify-center items-center p-10 text-center text-gray-500 dark:text-gray-400">
                                 {searchQuery ? "No scheduled sessions found matching your search." : "You have no scheduled sessions. Please contact an Admin to schedule your availability."}
                             </div>
                         )}
@@ -228,15 +228,15 @@ export default function Schedules({ auth, schedules }: any) {
                                     leaveFrom="opacity-100 scale-100"
                                     leaveTo="opacity-0 scale-95"
                                 >
-                                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white p-8 text-left align-middle shadow-2xl transition-all relative">
+                                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white dark:bg-slate-800 p-8 text-left align-middle shadow-2xl transition-all relative">
                                         <div className="text-center mb-6">
-                                            <div className="h-16 w-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <div className="h-16 w-16 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                             </div>
-                                            <Dialog.Title as="h3" className="text-2xl font-bold text-gray-900">
+                                            <Dialog.Title as="h3" className="text-2xl font-bold text-gray-900 dark:text-white">
                                                 Cancel Session?
                                             </Dialog.Title>
-                                            <p className="text-gray-500 mt-2">
+                                            <p className="text-gray-500 dark:text-gray-400 mt-2">
                                                 Are you sure you want to cancel the session <strong>{sessionToDelete?.title}</strong>? This action cannot be undone and will permanently remove this availability slot.
                                             </p>
                                         </div>
@@ -246,7 +246,7 @@ export default function Schedules({ auth, schedules }: any) {
                                                 type="button" 
                                                 onClick={() => setIsCancelModalOpen(false)}
                                                 disabled={isDeleting}
-                                                className="flex-1 py-3 px-4 text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors focus:outline-none"
+                                                className="flex-1 py-3 px-4 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-colors focus:outline-none"
                                             >
                                                 Keep Session
                                             </button>

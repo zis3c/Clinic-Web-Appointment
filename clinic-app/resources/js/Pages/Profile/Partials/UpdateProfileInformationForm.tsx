@@ -11,13 +11,13 @@ export default function UpdateProfileInformation({
     status,
     className = '',
 }: any) {
-    const user = usePage().props.auth.user;
+    const user = (usePage().props as any).auth.user;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
+        useForm<{ name: string; email: string }>({
             name: user.name,
             email: user.email,
         });
@@ -61,19 +61,19 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Update your account's profile information and email address.
                 </p>
             </header>
 
             {/* Profile Avatar Upload Section */}
-            <div className="mt-6 flex items-center gap-6 pb-6 border-b border-gray-100">
+            <div className="mt-6 flex items-center gap-6 pb-6 border-b border-gray-100 dark:border-slate-700">
                 <div className="relative group shrink-0">
-                    <div className="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-tr from-teal-400 to-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-sm border-2 border-gray-100">
+                    <div className="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-tr from-teal-400 to-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-sm border-2 border-gray-100 dark:border-slate-600">
                         {user.avatar ? (
                             <img 
                                 src={`/storage/${user.avatar}`} 
@@ -108,8 +108,8 @@ export default function UpdateProfileInformation({
                 </div>
                 
                 <div>
-                    <h3 className="text-sm font-bold text-gray-800">Profile Photo</h3>
-                    <p className="text-xs text-gray-500 mt-1 max-w-[240px]">
+                    <h3 className="text-sm font-bold text-gray-800 dark:text-slate-200">Profile Photo</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-[240px]">
                         PNG, JPG, or WEBP up to 2MB. Click on the image to upload a new one.
                     </p>
                     {uploading && (
@@ -162,13 +162,13 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-sm text-gray-800">
+                        <p className="mt-2 text-sm text-gray-800 dark:text-gray-300">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                className="rounded-md text-sm text-gray-600 dark:text-gray-400 underline hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
                                 Click here to re-send the verification email.
                             </Link>
@@ -193,7 +193,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                             Saved.
                         </p>
                     </Transition>

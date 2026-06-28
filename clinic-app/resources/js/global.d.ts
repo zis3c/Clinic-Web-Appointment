@@ -14,3 +14,8 @@ declare module '@/Components/*' {
 }
 
 // Removed Utils wildcard since Utils/time.ts provides its own strong types
+
+interface Window {
+    Echo: any;
+    Pusher: any;
+}

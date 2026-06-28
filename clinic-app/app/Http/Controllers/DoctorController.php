@@ -181,6 +181,8 @@ class DoctorController extends Controller
             \Log::error('Failed to send consultation completed communications: ' . $e->getMessage());
         }
 
+        event(new \App\Events\AppointmentUpdated('Appointment completed'));
+
         return redirect()->back()->with('success', 'Consultation marked as completed successfully.');
     }
 

@@ -26,6 +26,8 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
-        "lenis": "^1.3.23"
+        "laravel-echo": "^2.3.7",
+        "lenis": "^1.3.23",
+        "pusher-js": "^8.5.0"
     }
 }
