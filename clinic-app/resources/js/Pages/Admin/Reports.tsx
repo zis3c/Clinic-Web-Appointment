@@ -258,10 +258,10 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                                         <tr key={doctor.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                             <td className="pl-8 pr-4 py-4 whitespace-nowrap">
                                                 <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[10px] flex-shrink-0
-                                                    ${index === 0 ? 'bg-yellow-100 text-yellow-700' : 
-                                                      index === 1 ? 'bg-gray-100 text-gray-600' : 
-                                                      index === 2 ? 'bg-orange-100 text-orange-700' : 
-                                                      'bg-gray-50 text-gray-400'}`}
+                                                    ${index === 0 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' : 
+                                                      index === 1 ? 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300' : 
+                                                      index === 2 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' : 
+                                                      'bg-gray-50 dark:bg-slate-800 text-gray-400 dark:text-gray-500'}`}
                                                 >
                                                     {index + 1}
                                                 </span>
@@ -309,10 +309,10 @@ export default function Reports({ auth, metrics, appointments_last_30_days, top_
                                         <tr key={appointment.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                             <td className="pl-8 pr-4 py-4 whitespace-nowrap">
                                                 <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[10px] flex-shrink-0
-                                                    ${index === 0 ? 'bg-yellow-100 text-yellow-700' : 
-                                                      index === 1 ? 'bg-gray-100 text-gray-600' : 
-                                                      index === 2 ? 'bg-orange-100 text-orange-700' : 
-                                                      'bg-gray-50 text-gray-400'}`}
+                                                    ${index === 0 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' : 
+                                                      index === 1 ? 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300' : 
+                                                      index === 2 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' : 
+                                                      'bg-gray-50 dark:bg-slate-800 text-gray-400 dark:text-gray-500'}`}
                                                 >
                                                     {index + 1}
                                                 </span>

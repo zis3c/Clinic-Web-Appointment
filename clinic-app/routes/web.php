@@ -4,7 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\QueueController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\PrescriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +25,8 @@ Route::get('/appointments/{appointment}/cancel-from-email', [PatientController::
     ->name('appointments.cancel-from-email')
     ->middleware('signed');
 
+Route::get('/queue/tv', [QueueController::class, 'tv'])->name('queue.tv');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -33,9 +38,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 
+    // Prescription PDF Download
+    Route::get('/prescriptions/{appointment}/pdf', [PrescriptionController::class, 'downloadPdf'])->name('prescriptions.pdf');
+
     // Admin Routes
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/analytics', [AnalyticsController::class, 'adminAnalytics'])->name('analytics');
         
         Route::get('/doctors', [AdminController::class, 'doctors'])->name('doctors.index');
         Route::post('/doctors', [AdminController::class, 'storeDoctor'])->name('doctors.store');
@@ -65,12 +74,15 @@ Route::middleware('auth')->group(function () {
     // Doctor Routes
     Route::middleware('role:doctor')->prefix('doctor')->name('doctor.')->group(function () {
         Route::get('/dashboard', [DoctorController::class, 'dashboard'])->name('dashboard');
+        Route::get('/analytics', [AnalyticsController::class, 'doctorAnalytics'])->name('analytics');
         
         Route::get('/schedules', [DoctorController::class, 'schedules'])->name('schedules.index');
         Route::post('/schedules', [DoctorController::class, 'storeSchedule'])->name('schedules.store');
         Route::delete('/schedules/{schedule}', [DoctorController::class, 'destroySchedule'])->name('schedules.destroy');
 
         Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments.index');
+        Route::get('/history', [DoctorController::class, 'history'])->name('history.index');
+        Route::patch('/appointments/{appointment}/call', [DoctorController::class, 'callPatient'])->name('appointments.call');
         Route::patch('/appointments/{appointment}/complete', [DoctorController::class, 'completeAppointment'])->name('appointments.complete');
         Route::delete('/appointments/bulk', [DoctorController::class, 'bulkDestroyAppointments'])->name('appointments.bulk-destroy');
         Route::delete('/appointments/{appointment}', [DoctorController::class, 'destroyAppointment'])->name('appointments.destroy');
@@ -82,10 +94,14 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:patient', 'verified'])->prefix('patient')->name('patient.')->group(function () {
         Route::get('/dashboard', [PatientController::class, 'dashboard'])->name('dashboard');
         
+        Route::get('/profile', [PatientController::class, 'profile'])->name('profile.index');
+        Route::patch('/profile', [PatientController::class, 'updateProfile'])->name('profile.update');
+        
         Route::get('/doctors', [PatientController::class, 'doctors'])->name('doctors.index');
         
         Route::get('/schedules', [PatientController::class, 'schedules'])->name('schedules.index');
         Route::get('/appointments', [PatientController::class, 'appointments'])->name('appointments.index');
+        Route::get('/history', [PatientController::class, 'history'])->name('history.index');
         Route::post('/appointments', [PatientController::class, 'storeAppointment'])
             ->middleware('throttle:3,1')
             ->name('appointments.store');

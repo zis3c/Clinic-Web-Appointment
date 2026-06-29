@@ -43,6 +43,37 @@ class PatientController extends Controller
         ]);
     }
 
+    public function profile()
+    {
+        $patient = Auth::user()->patient;
+        return Inertia::render('Patient/Profile', [
+            'patientData' => $patient,
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'gender' => 'nullable|string|max:20',
+            'blood_group' => 'nullable|string|max:5',
+            'allergies' => 'nullable|string',
+            'medical_conditions' => 'nullable|string',
+        ]);
+
+        $patient = Auth::user()->patient;
+        
+        if ($patient) {
+            $patient->update([
+                'gender' => $request->gender,
+                'blood_group' => $request->blood_group,
+                'allergies' => $request->allergies,
+                'medical_conditions' => $request->medical_conditions,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Medical profile updated successfully.');
+    }
+
     public function dashboard()
     {
         $patient = Auth::user()->patient;
@@ -85,6 +116,25 @@ class PatientController extends Controller
         $mappedAppointments = collect($appointments)->map(fn($apt) => $this->mapAppointment($apt))->all();
 
         return Inertia::render('Patient/Appointments', [
+            'appointments' => $mappedAppointments,
+        ]);
+    }
+
+    public function history()
+    {
+        $patient = Auth::user()->patient;
+        
+        // Fetch only completed appointments
+        $appointments = $patient ? $patient->appointments()
+            ->where('status', 'completed')
+            ->with(['schedule.doctor.user', 'schedule.doctor.specialty'])
+            ->orderBy('date', 'desc')
+            ->orderBy('time_slot', 'desc')
+            ->get() : [];
+
+        $mappedAppointments = collect($appointments)->map(fn($apt) => $this->mapAppointment($apt))->all();
+
+        return Inertia::render('Patient/History', [
             'appointments' => $mappedAppointments,
         ]);
     }

@@ -49,17 +49,21 @@ export default function SidebarLayout({ user, header, children }: { user: any, h
             { name: 'Appointments', href: route('admin.appointments.index'), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
             { name: 'Schedules', href: route('admin.schedules.index'), icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
             { name: 'Reports', href: route('admin.reports.index'), icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+            { name: 'Analytics', href: route('admin.analytics'), icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
         ],
         doctor: [
             { name: 'Dashboard', href: route('doctor.dashboard'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
             { name: 'My Appointments', href: route('doctor.appointments.index'), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
             { name: 'My Schedule', href: route('doctor.schedules.index'), icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+            { name: 'Consultation History', href: route('doctor.history.index'), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
         ],
         patient: [
             { name: 'Dashboard', href: route('patient.dashboard'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+            { name: 'My Profile', href: route('patient.profile.index'), icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
             { name: 'Doctors', href: route('patient.doctors.index'), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
             { name: 'Book Appointment', href: route('patient.schedules.index'), icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
             { name: 'My Appointments', href: route('patient.appointments.index'), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+            { name: 'Medical History', href: route('patient.history.index'), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
         ]
     };
 
@@ -139,7 +143,7 @@ export default function SidebarLayout({ user, header, children }: { user: any, h
                         title={isCollapsed ? "Profile Settings" : undefined}
                         className={`flex items-center flex-1 min-w-0 rounded-xl transition-all duration-200 group hover:bg-gray-50 dark:hover:bg-slate-800 ${isCollapsed ? 'justify-center py-2 px-0' : 'gap-3 px-3 py-2'}`}
                     >
-                        <div className={`rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-blue-700 font-bold group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
+                        <div className={`rounded-full overflow-hidden bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white dark:group-hover:text-white transition-all flex-shrink-0 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
                             {user.avatar ? (
                                 <img 
                                     src={`/storage/${user.avatar}`} 
@@ -187,7 +191,7 @@ export default function SidebarLayout({ user, header, children }: { user: any, h
             <div className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 relative w-full transition-colors duration-300">
                 <button
                     onClick={() => setSidebarOpen(true)}
-                    className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-gray-100 dark:border-slate-800 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 shadow-sm focus:outline-none"
+                    className="lg:hidden print:hidden fixed top-4 left-4 z-40 p-2 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-gray-100 dark:border-slate-800 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 shadow-sm focus:outline-none"
                     aria-label="Open navigation"
                 >
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -205,7 +209,7 @@ export default function SidebarLayout({ user, header, children }: { user: any, h
 
             {/* Logout Confirmation Modal */}
             <Modal show={showLogoutModal} onClose={() => setShowLogoutModal(false)} maxWidth="sm">
-                <div className="p-8 dark:bg-slate-900">
+                <div className="p-8">
                     <div className="flex items-center justify-center w-16 h-16 mx-auto bg-rose-50 dark:bg-rose-900/20 rounded-2xl mb-6 shadow-inner">
                         <svg className="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>

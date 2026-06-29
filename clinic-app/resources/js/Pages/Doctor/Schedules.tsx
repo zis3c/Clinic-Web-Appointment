@@ -164,22 +164,20 @@ export default function Schedules({ auth, schedules }: any) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div className="flex justify-end items-center space-x-5">
+                                                <div className="flex justify-end items-center gap-2.5">
                                                     <button 
                                                         onClick={() => setSelectedSession(schedule)}
-                                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 font-bold transition-colors"
+                                                        title="View Bookings"
+                                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                                                     >
-                                                        View Bookings
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                                     </button>
-                                                    
-                                                    {/* Vertical Separator */}
-                                                    <div className="h-4 w-px bg-gray-300 dark:bg-gray-600 rounded"></div>
-
                                                     <button 
                                                         onClick={() => { setSessionToDelete(schedule); setIsCancelModalOpen(true); }}
-                                                        className="text-rose-500 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-bold transition-colors"
+                                                        title="Cancel Session"
+                                                        className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 p-2 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                                                     >
-                                                        Cancel Session
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                     </button>
                                                 </div>
                                             </td>
@@ -214,7 +212,7 @@ export default function Schedules({ auth, schedules }: any) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" />
+                            <div className="fixed inset-0 bg-gray-500/75 dark:bg-slate-900/80 backdrop-blur-sm" />
                         </Transition.Child>
 
                         <div className="fixed inset-0 overflow-y-auto">
@@ -278,7 +276,7 @@ export default function Schedules({ auth, schedules }: any) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm" />
+                            <div className="fixed inset-0 bg-gray-500/75 dark:bg-slate-900/80 backdrop-blur-sm" />
                         </Transition.Child>
 
                         <div className="fixed inset-0 overflow-y-auto">
@@ -292,46 +290,46 @@ export default function Schedules({ auth, schedules }: any) {
                                     leaveFrom="opacity-100 scale-100"
                                     leaveTo="opacity-0 scale-95"
                                 >
-                                    <Dialog.Panel className="w-full max-w-lg transform overflow-visible rounded-3xl bg-white p-8 text-left align-middle shadow-2xl transition-all relative">
+                                    <Dialog.Panel className="w-full max-w-lg transform overflow-visible rounded-3xl bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-8 text-left align-middle shadow-2xl transition-all relative">
                                         <button 
                                             onClick={() => setShowAddModal(false)}
-                                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                         >
                                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
                                         
-                                        <Dialog.Title as="h3" className="text-2xl font-bold mb-6 text-gray-900">
+                                        <Dialog.Title as="h3" className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
                                             Add New Session
                                         </Dialog.Title>
                                         
                                         <form onSubmit={submitAdd} className="space-y-4">
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">Session Title</label>
-                                                <input type="text" value={data.title} onChange={e => setData('title', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" placeholder="e.g. Morning Checkups" required />
+                                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Session Title</label>
+                                                <input type="text" value={data.title} onChange={e => setData('title', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" placeholder="e.g. Morning Checkups" required />
                                                 {errors.title && <div className="text-rose-500 text-sm mt-1">{errors.title}</div>}
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-bold text-gray-700 mb-1">Date</label>
-                                                    <input type="date" value={data.date} onChange={e => setData('date', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
+                                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Date</label>
+                                                    <input type="date" value={data.date} onChange={e => setData('date', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-bold text-gray-700 mb-1">Time</label>
-                                                    <input type="time" value={data.time} onChange={e => setData('time', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
+                                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Time</label>
+                                                    <input type="time" value={data.time} onChange={e => setData('time', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">Max Patients</label>
-                                                <input type="number" min="1" value={data.number_of_patients} onChange={(e: any) => setData('number_of_patients', Number(e.target.value))} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" required />
+                                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Max Patients</label>
+                                                <input type="number" min="1" value={data.number_of_patients} onChange={(e: any) => setData('number_of_patients', Number(e.target.value))} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" required />
                                             </div>
 
                                             <div className="pt-4 flex justify-end">
                                                 <button 
                                                     type="button" 
                                                     onClick={() => setShowAddModal(false)}
-                                                    className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                                                    className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg"
                                                 >
                                                     Cancel
                                                 </button>

@@ -4,6 +4,7 @@ import { Head, useForm, Link, router } from '@inertiajs/react';
 import CustomSelect from '@/Components/CustomSelect';
 import { Dialog, Transition } from '@headlessui/react';
 import Modal from '@/Components/Modal';
+import AdminDoctorHistoryModal from '@/Components/AdminDoctorHistoryModal';
 
 export default function Doctors({ auth, doctors, specialties }: any) {
     const [showAddModal, setShowAddModal] = useState(false);
@@ -234,12 +235,16 @@ export default function Doctors({ auth, doctors, specialties }: any) {
                                             {doctor.nic}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                                            <button 
-                                                onClick={() => setDoctorToDelete(doctor.id)}
-                                                className="text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300 font-semibold"
-                                            >
-                                                Remove
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+
+                                                <button 
+                                                    onClick={() => setDoctorToDelete(doctor.id)}
+                                                    title="Remove"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-700 dark:hover:text-rose-300 transition-colors shadow-sm"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -416,59 +421,12 @@ export default function Doctors({ auth, doctors, specialties }: any) {
                 </div>
             </Modal>
 
-            {/* Doctor Details Modal */}
-            <Modal show={showDoctorModal} onClose={() => setShowDoctorModal(false)} maxWidth="md">
-                {viewDoctor && (
-                    <div className="p-8 dark:bg-slate-800">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Doctor Profile</h3>
-                            <button onClick={() => setShowDoctorModal(false)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 bg-gray-50 dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 rounded-full p-2 transition-colors">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm space-y-4">
-                            <div className="flex items-center gap-4 border-b border-gray-100 dark:border-slate-700 pb-4 mb-4">
-                                <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-sm">
-                                    {viewDoctor.user?.name?.charAt(0) || '?'}
-                                </div>
-                                <div>
-                                    <h4 className="text-xl font-bold text-gray-900 dark:text-white">Dr. {viewDoctor.user?.name || 'Unknown'}</h4>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{viewDoctor.user?.email || 'No email'}</p>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">Phone Number</p>
-                                    {viewDoctor.tel ? (
-                                        <a 
-                                            href={`https://wa.me/${viewDoctor.tel.replace(/\D/g, '')}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center font-bold text-gray-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
-                                            title="Chat on WhatsApp"
-                                        >
-                                            {viewDoctor.tel}
-                                            <svg className="w-3.5 h-3.5 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                        </a>
-                                    ) : (
-                                        <p className="font-bold text-gray-900 dark:text-white">Not provided</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">National ID (NIC)</p>
-                                    <p className="font-bold text-gray-900 dark:text-white">{viewDoctor.nic || 'Not provided'}</p>
-                                </div>
-                                <div className="col-span-2">
-                                    <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">Specialty</p>
-                                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-400">
-                                        {viewDoctor.specialty?.name || 'Not assigned'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </Modal>
+            {/* Doctor History Modal */}
+            <AdminDoctorHistoryModal 
+                show={showDoctorModal} 
+                onClose={() => setShowDoctorModal(false)} 
+                doctor={viewDoctor} 
+            />
         </SidebarLayout>
     );
 }

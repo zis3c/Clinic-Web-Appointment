@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
 import PatientDetailsModal from '@/Components/PatientDetailsModal';
+import AdminPatientHistoryModal from '@/Components/AdminPatientHistoryModal';
 
 export default function Patients({ auth, patients }: any) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -205,12 +206,16 @@ export default function Patients({ auth, patients }: any) {
                                             {patient.dob}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                                            <button 
-                                                onClick={() => setPatientToDelete(patient.id)}
-                                                className="text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300 font-semibold"
-                                            >
-                                                Remove
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+
+                                                <button 
+                                                    onClick={() => setPatientToDelete(patient.id)}
+                                                    title="Remove"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-700 dark:hover:text-rose-300 transition-colors shadow-sm"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -279,7 +284,7 @@ export default function Patients({ auth, patients }: any) {
                 </div>
             </Modal>
 
-            <PatientDetailsModal 
+            <AdminPatientHistoryModal 
                 show={showPatientModal} 
                 onClose={() => setShowPatientModal(false)} 
                 patient={viewPatient} 

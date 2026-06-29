@@ -1,6 +1,13 @@
 import { Link } from '@inertiajs/react';
+import { useEffect } from 'react';
 
-export default function GuestLayout({ children, title, description }) {
+export default function GuestLayout({ children, title, description }: any) {
+    useEffect(() => {
+        // Guest pages are light-mode only. Force remove the dark class
+        // in case it lingered from an Inertia navigation from the dashboard.
+        document.documentElement.classList.remove('dark');
+    }, []);
+
     return (
         <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50 selection:bg-teal-500 selection:text-white">
             {/* Background elements */}

@@ -50,12 +50,12 @@ export default function CustomSelect({ value, onChange, options, placeholder = "
             <div 
                 ref={triggerRef}
                 onClick={handleToggle}
-                className={`flex justify-between items-center cursor-pointer ${className} ${isOpen ? 'ring-4 ring-blue-500/10 border-blue-500 bg-white' : ''}`}
+                className={`flex justify-between items-center cursor-pointer ${className} ${isOpen ? 'ring-4 ring-blue-500/10 dark:ring-blue-500/20 border-blue-500 bg-white dark:bg-slate-800' : 'bg-gray-50 dark:bg-slate-900/50'}`}
             >
-                <span className={selectedOption ? 'text-gray-700' : 'text-gray-400'}>
+                <span className={selectedOption ? 'text-gray-700 dark:text-slate-200' : 'text-gray-400 dark:text-gray-500'}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </span>
-                <svg className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </div>
@@ -69,7 +69,7 @@ export default function CustomSelect({ value, onChange, options, placeholder = "
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <div className={`absolute z-[200] w-full bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden py-1 max-h-48 overflow-y-auto ${dropUp ? 'bottom-full mb-2' : 'top-full mt-2'}`}>
+                <div className={`absolute z-[200] w-full bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden py-1 max-h-48 overflow-y-auto ${dropUp ? 'bottom-full mb-2' : 'top-full mt-2'}`}>
                     {options.map((option) => (
                         <div
                             key={option.value}
@@ -77,7 +77,7 @@ export default function CustomSelect({ value, onChange, options, placeholder = "
                                 onChange(option.value);
                                 setIsOpen(false);
                             }}
-                            className={`px-4 py-2.5 text-sm cursor-pointer hover:bg-blue-50 hover:text-blue-700 transition-colors ${value == option.value ? 'bg-blue-50 text-blue-700 font-bold' : 'text-gray-700 font-medium'}`}
+                            className={`px-4 py-2.5 text-sm cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700 dark:hover:text-blue-400 transition-colors ${value == option.value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium'}`}
                         >
                             {option.label}
                         </div>

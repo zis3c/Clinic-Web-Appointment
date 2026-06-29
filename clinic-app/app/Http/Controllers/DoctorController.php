@@ -47,11 +47,11 @@ class DoctorController extends Controller
           ->take(5)
           ->get();
 
-        // Waiting room: checked in patients ready for consultation
+        // Waiting room: checked in patients ready for consultation or in progress
         $waiting_room = Appointment::whereHas('schedule', function ($q) use ($doctor) {
             $q->where('doctor_id', $doctor->id);
         })->where('checked_in', true)
-          ->where('status', 'confirmed')
+          ->whereIn('status', ['confirmed', 'in_progress'])
           ->whereNotNull('checked_in_at')
           ->orderBy('checked_in_at', 'asc')
           ->with(['patient.user', 'schedule.doctor.user'])
@@ -134,12 +134,46 @@ class DoctorController extends Controller
         ]);
     }
 
+    public function history()
+    {
+        $doctor = Auth::user()->doctor;
+        
+        // Get all completed appointments belonging to schedules owned by this doctor
+        $appointments = $doctor ? Appointment::whereHas('schedule', function ($query) use ($doctor) {
+            $query->where('doctor_id', $doctor->id);
+        })->where('status', 'completed')
+          ->with(['patient.user', 'schedule'])
+          ->orderBy('date', 'desc')
+          ->orderBy('time_slot', 'desc')
+          ->get() : [];
+
+        return Inertia::render('Doctor/History', [
+            'appointments' => $appointments,
+        ]);
+    }
+
     public function destroyAppointment(Appointment $appointment)
     {
         Gate::authorize('delete', $appointment);
 
         $appointment->delete();
         return redirect()->back()->with('success', 'Appointment cancelled successfully.');
+    }
+
+    public function callPatient(Appointment $appointment)
+    {
+        // Ensure the doctor owns this schedule/appointment
+        if ($appointment->schedule->doctor_id !== Auth::user()->doctor->id) {
+            abort(403);
+        }
+
+        $appointment->update([
+            'status' => 'in_progress',
+        ]);
+
+        event(new \App\Events\AppointmentUpdated('Patient called'));
+
+        return redirect()->back()->with('success', 'Patient called to consultation room.');
     }
 
     public function completeAppointment(Request $request, Appointment $appointment)

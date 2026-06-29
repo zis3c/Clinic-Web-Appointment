@@ -16,7 +16,7 @@ export default function Modal({
     overflowVisible = false,
 }: PropsWithChildren<{
     show?: boolean;
-    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
     closeable?: boolean;
     onClose?: () => void;
     overflowVisible?: boolean;
@@ -33,10 +33,13 @@ export default function Modal({
         lg: 'sm:max-w-lg',
         xl: 'sm:max-w-xl',
         '2xl': 'sm:max-w-2xl',
+        '3xl': 'sm:max-w-3xl',
+        '4xl': 'sm:max-w-4xl',
+        '5xl': 'sm:max-w-5xl',
     }[maxWidth];
 
     return (
-        <Transition show={show} leave="duration-200">
+        <Transition show={show} appear={true} leave="duration-200">
             <Dialog
                 as="div"
                 id="modal"

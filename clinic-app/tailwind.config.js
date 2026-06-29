@@ -16,6 +16,21 @@ export default {
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                slate: {
+                    50: '#f9fafb',
+                    100: '#f3f4f6',
+                    200: '#e5e7eb',
+                    300: '#d1d5db',
+                    400: '#9ca3af',
+                    500: '#6b7280',
+                    600: '#4b5563',
+                    700: '#27272a', // zinc-800 equivalent for borders/hover
+                    800: '#0a0a0a', // Vercel card/elevated bg
+                    900: '#000000', // Vercel pure black main bg
+                    950: '#000000',
+                }
+            }
         },
     },
 

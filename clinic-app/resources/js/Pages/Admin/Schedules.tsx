@@ -18,7 +18,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
     const [viewSchedule, setViewSchedule] = useState<any>(null);
     const [showScheduleModal, setShowScheduleModal] = useState(false);
     const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
-    
+
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         doctor_ids: [],
@@ -41,7 +41,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
         if (!sessionToDelete) return;
         const targetId = sessionToDelete.id;
         const sessionTitle = sessionToDelete.title;
-        
+
         // Close modal and hide session immediately
         setIsCancelModalOpen(false);
         setPendingDeleteIds(prev => [...prev, targetId]);
@@ -67,7 +67,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
     };
 
     const handleSelect = (id: number) => {
-        setSelectedIds(prev => 
+        setSelectedIds(prev =>
             prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
         );
     };
@@ -86,12 +86,12 @@ export default function Schedules({ auth, schedules, doctors }: any) {
 
     const openAddModal = () => {
         reset();
-        
+
         // Robust way to get local timezone YYYY-MM-DD and HH:mm
         const now = new Date();
         const offset = now.getTimezoneOffset() * 60000;
         const localISOTime = (new Date(now.getTime() - offset)).toISOString().slice(0, 16);
-        
+
         setData({
             title: '',
             doctor_ids: [],
@@ -99,11 +99,11 @@ export default function Schedules({ auth, schedules, doctors }: any) {
             time: localISOTime.split('T')[1],
             number_of_patients: 10,
         });
-        
+
         setShowAddModal(true);
     };
 
-    const filteredSchedules = schedules.filter((schedule: any) => 
+    const filteredSchedules = schedules.filter((schedule: any) =>
         !pendingDeleteIds.includes(schedule.id) && (
             schedule.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             schedule.doctor.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -120,7 +120,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
             <Head title="Manage Schedules" />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                
+
                 {/* Header Actions */}
                 <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
                     <div>
@@ -172,15 +172,15 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input 
-                                type="text" 
-                                placeholder="Search schedules..." 
+                            <input
+                                type="text"
+                                placeholder="Search schedules..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="h-11 pl-10 pr-4 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all w-full sm:w-64 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-gray-500"
                             />
                         </div>
-                        <button 
+                        <button
                             onClick={openAddModal}
                             className="h-11 px-5 flex items-center justify-center bg-gradient-to-r from-teal-400 to-blue-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all whitespace-nowrap"
                         >
@@ -207,8 +207,8 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                             </thead>
                             <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                                 {filteredSchedules.map((schedule: any) => (
-                                    <tr 
-                                        key={schedule.id} 
+                                    <tr
+                                        key={schedule.id}
                                         onClick={() => {
                                             if (isBulkMode) {
                                                 handleSelect(schedule.id);
@@ -221,8 +221,8 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                     >
                                         {isBulkMode && (
                                             <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                                <input 
-                                                    type="checkbox" 
+                                                <input
+                                                    type="checkbox"
                                                     checked={selectedIds.includes(schedule.id)}
                                                     onChange={() => handleSelect(schedule.id)}
                                                     className="w-5 h-5 rounded-md border-gray-300 dark:border-slate-600 text-blue-600 dark:bg-slate-700 focus:ring-blue-500 cursor-pointer"
@@ -243,12 +243,15 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                                            <button 
-                                                onClick={() => { setSessionToDelete(schedule); setIsCancelModalOpen(true); }}
-                                                className="text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300 font-semibold"
-                                            >
-                                                Cancel Session
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button 
+                                                    onClick={() => { setSessionToDelete(schedule); setIsCancelModalOpen(true); }}
+                                                    title="Cancel Session"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-700 dark:hover:text-rose-300 transition-colors shadow-sm"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -274,7 +277,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm" />
+                            <div className="fixed inset-0 bg-gray-500/75 dark:bg-slate-900/80 backdrop-blur-sm" />
                         </Transition.Child>
 
                         <div className="fixed inset-0 overflow-y-auto">
@@ -288,33 +291,33 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                     leaveFrom="opacity-100 scale-100"
                                     leaveTo="opacity-0 scale-95"
                                 >
-                                    <Dialog.Panel className="w-full max-w-lg transform overflow-visible rounded-3xl bg-white dark:bg-slate-800 p-8 text-left align-middle shadow-2xl transition-all relative">
-                                        <button 
+                                    <Dialog.Panel className="w-full max-w-lg transform overflow-visible rounded-3xl bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-8 text-left align-middle shadow-2xl transition-all relative">
+                                        <button
                                             onClick={() => setShowAddModal(false)}
                                             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                         >
                                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
-                                        
+
                                         <Dialog.Title as="h3" className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
                                             Add New Session
                                         </Dialog.Title>
-                                        
+
                                         <form onSubmit={submit} className="space-y-4">
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Session Title</label>
-                                                <input type="text" value={data.title} onChange={e => setData('title', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" placeholder="e.g. Morning Checkups" required />
+                                                <input type="text" value={data.title} onChange={e => setData('title', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" placeholder="e.g. Morning Checkups" required />
                                                 {errors.title && <div className="text-rose-500 text-sm mt-1">{errors.title}</div>}
                                             </div>
-                                            
+
                                             <div className="relative z-50">
                                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Doctors (Select Multiple)</label>
-                                                <CustomMultiSelect 
-                                                    value={data.doctor_ids} 
-                                                    onChange={(val: any) => setData('doctor_ids', val)} 
+                                                <CustomMultiSelect
+                                                    value={data.doctor_ids}
+                                                    onChange={(val: any) => setData('doctor_ids', val)}
                                                     options={doctors.map((d: any) => ({ value: d.id, label: `Dr. ${d.user.name}` }))}
                                                     placeholder="Select doctors for this session..."
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 transition-all outline-none shadow-sm font-medium cursor-pointer"
+                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 transition-all outline-none shadow-sm font-medium cursor-pointer"
                                                 />
                                                 {errors.doctor_ids && <div className="text-rose-500 text-sm mt-1">{errors.doctor_ids}</div>}
                                             </div>
@@ -322,29 +325,29 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Date</label>
-                                                    <input type="date" value={data.date} onChange={e => setData('date', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
+                                                    <input type="date" value={data.date} onChange={e => setData('date', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Time</label>
-                                                    <input type="time" value={data.time} onChange={e => setData('time', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
+                                                    <input type="time" value={data.time} onChange={e => setData('time', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium cursor-pointer" required />
                                                 </div>
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Max Patients</label>
-                                                <input type="number" min="1" value={data.number_of_patients} onChange={(e: any) => setData('number_of_patients', Number(e.target.value))} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" required />
+                                                <input type="number" min="1" value={data.number_of_patients} onChange={(e: any) => setData('number_of_patients', Number(e.target.value))} className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 dark:placeholder-gray-500 text-gray-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm font-medium" required />
                                             </div>
 
                                             <div className="pt-4 flex justify-end">
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     onClick={() => setShowAddModal(false)}
-                                                    className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg"
+                                                    className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg"
                                                 >
                                                     Cancel
                                                 </button>
-                                                <button 
-                                                    type="submit" 
+                                                <button
+                                                    type="submit"
                                                     disabled={processing}
                                                     className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50"
                                                 >
@@ -371,7 +374,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" />
+                            <div className="fixed inset-0 bg-gray-500/75 dark:bg-slate-900/80 backdrop-blur-sm" />
                         </Transition.Child>
 
                         <div className="fixed inset-0 overflow-y-auto">
@@ -397,18 +400,18 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                                 Are you sure you want to cancel the session <strong>{sessionToDelete?.title}</strong>? This action cannot be undone and will permanently remove this availability slot for all assigned doctors.
                                             </p>
                                         </div>
-                                        
+
                                         <div className="flex gap-3 mt-8">
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => setIsCancelModalOpen(false)}
                                                 disabled={isDeleting}
                                                 className="flex-1 py-3 px-4 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-colors focus:outline-none"
                                             >
                                                 Keep Session
                                             </button>
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={confirmDelete}
                                                 disabled={isDeleting}
                                                 className="flex-1 py-3 px-4 text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md disabled:opacity-50 transition-all focus:outline-none"
@@ -486,7 +489,7 @@ export default function Schedules({ auth, schedules, doctors }: any) {
                                 <div className="col-span-2">
                                     <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">Doctor Contact</p>
                                     {viewSchedule.doctor?.tel ? (
-                                        <a 
+                                        <a
                                             href={`https://wa.me/${viewSchedule.doctor.tel.replace(/\D/g, '')}`}
                                             target="_blank"
                                             rel="noopener noreferrer"

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html.dark {
+    color-scheme: dark;
+}
+
 @media print {
     /* Hide sidebar, nav, and all interactive elements */
     nav, aside, header,

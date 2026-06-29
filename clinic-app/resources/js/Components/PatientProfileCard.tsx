@@ -46,9 +46,17 @@ export default function PatientProfileCard({
             <div className={`${variant === 'modal' ? 'px-8 pb-8 pt-4' : ''} flex-1`}>
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm space-y-4 h-full">
                         <div className="flex items-center gap-4 border-b border-gray-100 dark:border-slate-700 pb-4 mb-4">
-                            <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-tr from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-sm">
-                                {patient.user?.name?.charAt(0) || '?'}
-                            </div>
+                            {patient.user?.avatar ? (
+                                <img 
+                                    src={`/storage/${patient.user.avatar}`} 
+                                    alt={patient.user.name} 
+                                    className="h-16 w-16 shrink-0 rounded-full object-cover border-2 border-white dark:border-slate-700 shadow-sm"
+                                />
+                            ) : (
+                                <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-tr from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-sm">
+                                    {patient.user?.name?.charAt(0) || '?'}
+                                </div>
+                            )}
                             <div>
                                 <h4 className="text-xl font-bold text-gray-900 dark:text-white">{patient.user?.name || 'Unknown Patient'}</h4>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">{patient.user?.email || 'No email'}</p>

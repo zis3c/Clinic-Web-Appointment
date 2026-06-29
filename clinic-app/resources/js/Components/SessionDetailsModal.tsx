@@ -58,7 +58,7 @@ export default function SessionDetailsModal({ selectedSession, onClose }: { sele
                                             </p>
                                         </div>
 
-                                        <div className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 flex-1 flex flex-col min-h-0">
+                                        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm flex-1 flex flex-col min-h-0">
                                             <h4 className="font-bold text-gray-800 dark:text-slate-200 mb-4 flex items-center justify-between shrink-0">
                                                 Booked Patients
                                                 <span className="bg-white dark:bg-slate-700 px-3 py-1 rounded-full text-xs border border-gray-200 dark:border-slate-600">

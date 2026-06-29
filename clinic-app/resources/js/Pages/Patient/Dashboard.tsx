@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import SidebarLayout from '@/Layouts/SidebarLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { formatTime12Hour } from '../../Utils/time';
@@ -352,82 +352,60 @@ export default function Dashboard({ auth, appointments = [] }: any) {
                 maxWidth="md"
             >
                 {selectedAptForEHR && (
-                    <div className="p-8 relative">
+                    <div className="relative max-h-[90vh] flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+                        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white dark:from-slate-800 to-transparent z-10 pointer-events-none"></div>
+                        
                         <button 
                             onClick={() => setSelectedAptForEHR(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-rose-500 transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95 bg-gray-50 hover:bg-rose-50 p-1.5 rounded-full shadow-sm z-20"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-rose-500 transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95 bg-gray-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 p-1.5 rounded-full shadow-sm z-20"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
 
-                        <div className="text-center mb-6">
-                            <div className="h-14 w-14 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
+                        <div className="p-8 overflow-y-auto custom-scrollbar relative z-0">
+                            <div className="text-center mb-6">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Consultation EHR Record</h3>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">JanjiCare Completed Consultation Note</p>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Consultation EHR Record</h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">JanjiCare Completed Consultation Note</p>
-                        </div>
 
-                        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
-                            <div className="flex flex-col sm:flex-row justify-between text-sm pb-3 border-b border-slate-200/60 dark:border-slate-700/60 gap-2">
+                            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
+                                <div className="flex flex-col sm:flex-row justify-between text-sm pb-3 border-b border-slate-200/60 dark:border-slate-700/60 gap-2">
+                                    <div>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DOCTOR</p>
+                                        <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">Dr. {selectedAptForEHR.schedule?.doctor?.user?.name}</p>
+                                        <p className="text-xs text-blue-600 dark:text-blue-400 font-bold">{selectedAptForEHR.schedule?.doctor?.specialty?.name}</p>
+                                    </div>
+                                    <div className="sm:text-right">
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DATE & TIME</p>
+                                        <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">
+                                            {new Date(selectedAptForEHR.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                        </p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{formatTime12Hour(selectedAptForEHR.schedule?.time)}</p>
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DOCTOR</p>
-                                    <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">Dr. {selectedAptForEHR.schedule?.doctor?.user?.name}</p>
-                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-bold">{selectedAptForEHR.schedule?.doctor?.specialty?.name}</p>
-                                </div>
-                                <div className="sm:text-right">
-                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">DATE & TIME</p>
-                                    <p className="font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">
-                                        {new Date(selectedAptForEHR.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                    <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Diagnosis</h4>
+                                    <p className="text-sm font-extrabold text-slate-900 dark:text-white bg-teal-50/50 dark:bg-teal-900/20 border border-teal-100/50 dark:border-teal-800/30 p-3 rounded-xl mt-1.5 leading-relaxed">
+                                        {selectedAptForEHR.diagnosis || 'No diagnosis recorded.'}
                                     </p>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{formatTime12Hour(selectedAptForEHR.schedule?.time)}</p>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prescriptions</h4>
+                                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 bg-blue-50/30 dark:bg-blue-900/20 border border-blue-100/30 dark:border-blue-800/30 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed font-mono">
+                                        {selectedAptForEHR.prescriptions || 'No prescription written.'}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Clinical Notes</h4>
+                                    <p className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed">
+                                        {selectedAptForEHR.notes || 'No doctor notes.'}
+                                    </p>
                                 </div>
                             </div>
-
-                            <div>
-                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Diagnosis</h4>
-                                <p className="text-sm font-extrabold text-slate-900 dark:text-white bg-teal-50/50 dark:bg-teal-900/20 border border-teal-100/50 dark:border-teal-800/30 p-3 rounded-xl mt-1.5 leading-relaxed">
-                                    {selectedAptForEHR.diagnosis || 'No diagnosis recorded.'}
-                                </p>
-                            </div>
-
-                            <div>
-                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prescriptions</h4>
-                                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 bg-blue-50/30 dark:bg-blue-900/20 border border-blue-100/30 dark:border-blue-800/30 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed font-mono">
-                                    {selectedAptForEHR.prescriptions || 'No prescription written.'}
-                                </p>
-                            </div>
-
-                            <div>
-                                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Clinical Notes</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-xl mt-1.5 whitespace-pre-line leading-relaxed">
-                                    {selectedAptForEHR.notes || 'No doctor notes.'}
-                                </p>
-                            </div>
                         </div>
-
-                        {/* Stamp and signature simulation */}
-                        <div className="flex justify-between items-center px-4">
-                            <div className="text-[9px] text-slate-400 font-bold">
-                                JanjiCare Electronic Health Record<br/>
-                                System ID: #{selectedAptForEHR.id}
-                            </div>
-                            <div className="text-right flex flex-col items-center">
-                                <div className="font-serif text-teal-600/85 text-xl font-bold italic rotate-[-4deg] border-2 border-teal-500/20 px-3 py-1 rounded bg-teal-50/20">
-                                    Dr. {selectedAptForEHR.schedule?.doctor?.user?.name?.split(' ')[0]}
-                                </div>
-                                <div className="text-[8px] text-slate-400 uppercase font-black tracking-wider mt-1">Digitally Signed</div>
-                            </div>
-                        </div>
-
-                        <button 
-                            onClick={() => setSelectedAptForEHR(null)}
-                            className="mt-6 w-full py-3 px-4 text-sm font-black text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-1 active:translate-y-0 rounded-xl shadow-md transition-all duration-300 text-center focus:outline-none"
-                        >
-                            Close Record
-                        </button>
                     </div>
                 )}
             </Modal>

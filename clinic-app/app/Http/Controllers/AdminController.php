@@ -32,11 +32,43 @@ class AdminController extends Controller
         ]);
     }
 
+    public function analytics()
+    {
+        // Chart Data 1: Appointments per day (last 7 days)
+        $chartDates = [];
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $chartDates[] = now()->subDays($i)->format('M d');
+            $chartData[] = Appointment::whereHas('schedule', function($q) use ($date) {
+                $q->where('date', $date);
+            })->count();
+        }
+
+        // Chart Data 2: Doctors by Specialty
+        $specialties = Specialty::withCount('doctors')->get();
+        $specialtyLabels = $specialties->pluck('name')->toArray();
+        $specialtyData = $specialties->pluck('doctors_count')->toArray();
+
+        return Inertia::render('Admin/Analytics', [
+            'chartData' => [
+                'appointmentsLine' => [
+                    'labels' => $chartDates,
+                    'data' => $chartData,
+                ],
+                'specialtyDoughnut' => [
+                    'labels' => $specialtyLabels,
+                    'data' => $specialtyData,
+                ]
+            ]
+        ]);
+    }
+
     // --- DOCTORS ---
     public function doctors()
     {
         return Inertia::render('Admin/Doctors', [
-            'doctors' => Doctor::with(['user', 'specialty'])->get(),
+            'doctors' => Doctor::with(['user', 'specialty', 'schedules.appointments.patient.user'])->get(),
             'specialties' => Specialty::all(),
         ]);
     }
@@ -123,7 +155,7 @@ class AdminController extends Controller
     public function patients()
     {
         return Inertia::render('Admin/Patients', [
-            'patients' => Patient::with('user')->get(),
+            'patients' => Patient::with(['user', 'appointments.schedule.doctor.user', 'appointments.schedule.doctor.specialty'])->get(),
         ]);
     }
 

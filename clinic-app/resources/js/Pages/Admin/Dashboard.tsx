@@ -3,8 +3,7 @@ import Modal from '@/Components/Modal';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
-export default function Dashboard({ auth, doctorCount, patientCount, appointmentCount, scheduleCount, appointments = [] }: any) {
+export default function Dashboard({ auth, doctorCount, patientCount, appointmentCount, scheduleCount, appointments = [], chartData }: any) {
     const [showCodeCheckIn, setShowCodeCheckIn] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);

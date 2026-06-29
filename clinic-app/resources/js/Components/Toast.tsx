@@ -107,40 +107,40 @@ export default function Toast() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
             >
-                <div className="pointer-events-auto w-[400px] max-w-[calc(100vw-3rem)] overflow-hidden rounded-2xl bg-white shadow-2xl border border-gray-100 ring-1 ring-black ring-opacity-5">
+                <div className="pointer-events-auto w-[400px] max-w-[calc(100vw-3rem)] overflow-hidden rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-gray-100 dark:border-slate-700 ring-1 ring-black ring-opacity-5 dark:ring-white/10">
                     <div className="p-5">
                         <div className="flex items-start">
                             <div className="flex-shrink-0 mt-0.5">
                                 {type === 'success' ? (
-                                    <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shadow-sm">
-                                        <svg className="h-5.5 w-5.5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                                    <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shadow-sm">
+                                        <svg className="h-5.5 w-5.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                 ) : type === 'error' ? (
-                                    <div className="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center shadow-sm">
-                                        <svg className="h-5.5 w-5.5 text-rose-600" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                                    <div className="w-9 h-9 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center shadow-sm">
+                                        <svg className="h-5.5 w-5.5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </div>
                                 ) : (
-                                    <div className="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center shadow-sm relative overflow-hidden">
-                                        <svg className="h-5 w-5 text-rose-600 animate-pulse" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                                    <div className="w-9 h-9 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center shadow-sm relative overflow-hidden">
+                                        <svg className="h-5 w-5 text-rose-600 dark:text-rose-400 animate-pulse" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </div>
                                 )}
                             </div>
                             <div className="ml-3.5 flex-1 min-w-0 pt-0.5">
-                                <p className="text-sm font-extrabold text-gray-900">
+                                <p className="text-sm font-extrabold text-gray-900 dark:text-white">
                                     {type === 'success' ? 'Success!' : type === 'error' ? 'Action Failed' : 'Item Deleted'}
                                 </p>
-                                <p className="mt-1 text-sm text-gray-500 font-semibold break-words whitespace-normal leading-relaxed">{message}</p>
+                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 font-semibold break-words whitespace-normal leading-relaxed">{message}</p>
 
                                 {type === 'undo' && (
                                     <div className="mt-4 space-y-3.5">
                                         {/* Cylindrical / 3D capsule gauge UI */}
-                                        <div className="relative w-full h-3 bg-gray-150 rounded-full border border-gray-200/50 shadow-[inner_0_2px_4px_rgba(0,0,0,0.06)] overflow-hidden flex items-center">
+                                        <div className="relative w-full h-3 bg-gray-150 dark:bg-slate-800 rounded-full border border-gray-200/50 dark:border-slate-700 shadow-[inner_0_2px_4px_rgba(0,0,0,0.06)] overflow-hidden flex items-center">
                                             {/* Reflective light glaze on the glass cylinder */}
                                             <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none z-10"></div>
                                             {/* Dynamic color changing 3D cylinder gauge */}
@@ -151,7 +151,7 @@ export default function Toast() {
                                         </div>
 
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                            <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                                                 Auto-saving in {Math.ceil((progress / 100) * 6)}s...
                                             </span>
                                             <button
@@ -167,7 +167,7 @@ export default function Toast() {
                             <div className="ml-4 flex flex-shrink-0">
                                 <button
                                     type="button"
-                                    className="inline-flex rounded-full bg-gray-50 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors cursor-pointer"
+                                    className="inline-flex rounded-full bg-gray-50 dark:bg-slate-800 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none transition-colors cursor-pointer"
                                     onClick={handleCloseClick}
                                 >
                                     <span className="sr-only">Close</span>

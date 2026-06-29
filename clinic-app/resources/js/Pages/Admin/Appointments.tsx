@@ -1,7 +1,7 @@
 import SidebarLayout from '@/Layouts/SidebarLayout';
 import Modal from '@/Components/Modal';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Fragment } from 'react';
 import PatientDetailsModal from '@/Components/PatientDetailsModal';
 
 export default function Appointments({ auth, appointments }: any) {
@@ -287,7 +287,7 @@ export default function Appointments({ auth, appointments }: any) {
                                     const allGroupSelected = groupAptIds.every((id: number) => selectedIds.includes(id));
                                     
                                     return (
-                                        <> 
+                                        <Fragment key={`group-${group.scheduleId}`}> 
                                             {/* Session Header Row */}
                                             <tr 
                                                 key={`session-${group.scheduleId}`}
@@ -507,7 +507,7 @@ export default function Appointments({ auth, appointments }: any) {
                                                     </td>
                                                 </tr>
                                             ))}
-                                        </>
+                                        </Fragment>
                                     );
                                 })}
                             </tbody>
