@@ -1,0 +1,14 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - routes/
+        - database/
+
+    level: 5
+
+    ignoreErrors:
+        - '#Access to an undefined property Illuminate\\Http\\Request::#'
+        - '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::#'

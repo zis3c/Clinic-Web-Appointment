@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: janjicare-app
+    container_name: janjicare_app
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=janjicare
+      - DB_USERNAME=${POSTGRES_USER:-janjicare}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - janjicare_network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: janjicare_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: janjicare
+      POSTGRES_USER: ${POSTGRES_USER:-janjicare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - janjicare_postgres_data:/var/lib/postgresql/data
+    networks:
+      - janjicare_network
+
+  redis:
+    image: redis:alpine
+    container_name: janjicare_redis
+    restart: always
+    # --bind 0.0.0.0: listen on all interfaces INSIDE the container (required for
+    # inter-container comms), but NO ports: mapping means it is never reachable
+    # from outside the Docker network.  --protected-mode no is safe here because
+    # the container is isolated and password-protected.
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--requirepass", "${REDIS_PASSWORD:?set REDIS_PASSWORD}",
+      "--bind", "0.0.0.0",
+      "--protected-mode", "no"
+    ]
+    # NO ports: block — Redis must never be reachable from the host network
+    volumes:
+      - janjicare_redis_data:/data
+    networks:
+      - janjicare_network
+
+  # Queue Worker
+  worker:
+    image: janjicare-app
+    container_name: janjicare_worker
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    command: php artisan queue:work --sleep=3 --tries=3
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=janjicare
+      - DB_USERNAME=${POSTGRES_USER:-janjicare}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - janjicare_network
+
+  # Reverb WebSocket Server
+  reverb:
+    image: janjicare-app
+    container_name: janjicare_reverb
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    command: php artisan reverb:start
+    ports:
+      # Bind only to localhost — Nginx proxies /app/ and /apps/ to this port.
+      # Prevents Reverb WebSocket from being directly reachable on the public IP.
+      - "127.0.0.1:8080:8080"
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=janjicare
+      - DB_USERNAME=${POSTGRES_USER:-janjicare}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - janjicare_network
+
+networks:
+  janjicare_network:
+    driver: bridge
+
+volumes:
+  janjicare_postgres_data:
+  janjicare_redis_data:

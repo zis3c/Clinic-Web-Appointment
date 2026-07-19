@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "**/*.sqlite-wal": true,
+    "**/*.sqlite-shm": true
+  },
+  "css.lint.unknownAtRules": "ignore"
+}
