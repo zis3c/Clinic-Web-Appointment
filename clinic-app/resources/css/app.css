@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html.dark {
+    color-scheme: dark;
+}
+
+@media print {
+    /* Hide sidebar, nav, and all interactive elements */
+    nav, aside, header,
+    [class*="sidebar"], [class*="Sidebar"],
+    [class*="lg:w-72"], [class*="lg:w-20"] {
+        display: none !important;
+    }
+
+    /* Make main content fill the full page */
+    body, html {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+    }
+
+    /* Remove the flex layout that constrains the main area */
+    .flex.h-screen {
+        display: block !important;
+    }
+
+    /* Ensure tables don't break across pages */
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; page-break-after: auto; }
+    thead { display: table-header-group; }
+
+    /* Remove all shadows & rounded corners for clean print */
+    * {
+        box-shadow: none !important;
+    }
+}
+
+/* Lenis Smooth Scroll Recommended CSS */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Custom modern scrollbar for internal containers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track:vertical {
+  background: transparent;
+  margin-top: 0px;
+}
+
+.custom-scrollbar:has(table)::-webkit-scrollbar-track:vertical {
+  margin-top: 45px; /* Matches exact height of thead (py-3.5 + text-xs = 44px + 1px border) to not overlap sticky header */
+}
+
+.modal-scrollbar::-webkit-scrollbar-track:vertical {
+  margin-top: 0px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Tailwind gray-300 */
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* Tailwind gray-400 */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}
+
+@keyframes gradient-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-ring {
+  background-size: 200% 200%;
+  animation: gradient-border 3s ease infinite;
+}
+
+/* LiveKit Custom Premium UI Overrides */
+.lk-room-container {
+    --lk-control-bar-bg: transparent;
+}
+
+.lk-participant-tile {
+    border-radius: 1.5rem !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
+    background: #0f172a !important; /* slate-900 */
+}
+
+.lk-participant-metadata {
+    background: rgba(15, 23, 42, 0.7) !important;
+    backdrop-filter: blur(8px) !important;
+    border-radius: 0.75rem !important;
+    margin: 0.5rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.lk-button {
+    background-color: rgba(30, 41, 59, 0.8) !important; /* slate-800 */
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 9999px !important;
+    transition: all 0.3s ease !important;
+    color: white !important;
+}
+
+.lk-button:hover {
+    background-color: rgba(51, 65, 85, 0.9) !important; /* slate-700 */
+    transform: scale(1.05) !important;
+}
+
+.lk-button[data-lk-source="camera"][data-lk-video-muted="false"],
+.lk-button[data-lk-source="microphone"][data-lk-audio-muted="false"] {
+    background-color: rgba(16, 185, 129, 0.8) !important; /* emerald-500 */
+}
+
+.lk-button[data-lk-source="camera"][data-lk-video-muted="true"],
+.lk-button[data-lk-source="microphone"][data-lk-audio-muted="true"] {
+    background-color: rgba(239, 68, 68, 0.8) !important; /* red-500 */
+}
+
+/* Override LiveKit's harsh blue speaking ring → premium teal glow */
+.lk-participant-tile[data-lk-speaking="true"] {
+    border-color: rgba(20, 184, 166, 0.8) !important; /* teal-500 */
+    box-shadow:
+        0 0 0 2px rgba(20, 184, 166, 0.5),
+        0 0 20px rgba(20, 184, 166, 0.2),
+        0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Remove default blue outline/focus ring on tiles */
+.lk-participant-tile:focus,
+.lk-participant-tile:focus-visible,
+.lk-participant-tile:focus-within {
+    outline: none !important;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Strip any blue background from participant name */
+.lk-participant-name {
+    background: transparent !important;
+}
