@@ -59,7 +59,7 @@ Because JanjiCare handles sensitive medical data and appointments, security is i
 
 **Backend**
 - [Laravel 13](https://laravel.com/)
-- [PHP 8.3+](https://www.php.net/)
+- [PHP 8.3.36+ / 8.4.27+ / 8.5.12+](https://www.php.net/) (patched for CVE-2026-109618 / CVE-2026-109619)
 - MySQL / PostgreSQL
 
 **Frontend**
@@ -77,7 +77,7 @@ Follow these quick steps to get a local copy of JanjiCare up and running.
 
 ### Prerequisites
 
-* PHP >= 8.3
+* PHP >= 8.3.36 (8.3.x), 8.4.27 (8.4.x), or 8.5.12 (8.5.x)
 * Composer
 * Node.js & npm
 * A relational database (MySQL/PostgreSQL)

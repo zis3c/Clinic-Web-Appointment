@@ -1,4 +1,7 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.4.27-fpm-alpine
+
+# CVE-2026-109619: PHP session.upload_progress is abused in the exploit chain
+RUN echo "session.upload_progress.enabled=0" > /usr/local/etc/php/conf.d/security.ini
 
 # Install system dependencies
 RUN apk add --no-cache \

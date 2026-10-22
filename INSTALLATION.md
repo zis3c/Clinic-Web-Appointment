@@ -9,7 +9,7 @@ Welcome to the detailed installation guide for the JanjiCare Clinic Web Appointm
 Before you begin, ensure your system meets the following requirements:
 
 ### Backend
-- **PHP**: `^8.3`
+- **PHP**: `^8.3`, patched to at least 8.3.36 / 8.4.27 / 8.5.12 (CVE-2026-109618 / CVE-2026-109619)
 - **Composer**: `v2.x`
 - **Database**: PostgreSQL (recommended) or MySQL
 - **Redis**: Recommended for production (required if scaling WebSockets), but completely **optional** for local development.
